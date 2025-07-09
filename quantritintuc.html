@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Tin Tức</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.tiny.cloud/1/YOUR_API_KEY/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <!-- Thay 'YOUR_API_KEY' bằng API key TinyMCE của bạn -->
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f8f0ff;
+            color: #343a40;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            max-width: 700px;
+            margin: 0 auto 20px auto;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .form-container label {
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-container input,
+        .form-container select,
+         .form-container textarea {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-family: 'Nunito', sans-serif;
+        }
+        .form-container input[type="file"] {
+                padding: 5px;
+            }
+
+        .form-container button {
+            background-color: #7e57c2;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+            font-size: 1.1rem;
+            align-self: flex-start;
+        }
+
+        .form-container button:hover {
+            background-color: #673ab7;
+        }
+
+        .news-list-container {
+            margin-top: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+
+        .search-container {
+            display: flex;
+             margin-bottom: 15px;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+          .search-container input {
+               padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+             font-size: 1rem;
+        }
+          .search-container button {
+           background-color: #7e57c2;
+           color: white;
+             padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+             font-size: 1.1rem;
+        }
+        .search-container button:hover {
+           background-color: #673ab7;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        table th,
+        table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 1rem;
+        }
+
+        table th {
+            background-color: #7e57c2;
+            color: white;
+            font-weight: 600;
+        }
+
+        table tr:last-child td {
+            border-bottom: none;
+        }
+
+        table tr:hover {
+            background-color: #f0ecf8;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-start;
+        }
+
+        .action-buttons button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            background-color: #f0ecf8;
+            color: #555;
+            transition: background-color 0.3s ease;
+        }
+
+        .action-buttons button:hover {
+            background-color: #e0d8f0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-content h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .modal-content p {
+            font-size: 1.1rem;
+            color: #555;
+            line-height: 1.6;
+        }
+         .tox-tinymce {
+                border: 1px solid #ddd;
+                border-radius: 5px;
+              margin-bottom: 15px;
+            }
+            .tox-tinymce-aux {
+                z-index: 1100 !important;
+            }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Quản lý Tin Tức</h1>
+
+        <div class="form-container">
+            <label for="title">Tên tin tức:</label>
+            <input type="text" id="title" required>
+
+            <label for="category">Mục bài viết:</label>
+            <select id="category" required>
+                <option value="thongbao">Thông báo quan trọng</option>
+                <option value="bantochuc">Tin từ ban tổ chức</option>
+            </select>
+            <label for="order">Vị trí hiển thị:</label>
+            <input type="number" id="order" required value="1" min="1">
+            <label for="content">Chi tiết tin tức:</label>
+             <textarea id="content" rows="5" required></textarea>
+            <button onclick="addNews()">Thêm tin tức</button>
+        </div>
+
+         <div class="search-container">
+             <input type="text" id="searchInput" placeholder="Tìm kiếm tin tức" />
+             <button onclick="searchNews()">Tìm kiếm</button>
+        </div>
+
+        <div class="news-list-container">
+            <table id="newsTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên Tin Tức</th>
+                        <th>Mục Bài Viết</th>
+                         <th>Vị trí</th>
+                        <th>Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeEditModal">×</span>
+                <h2 id="editModalTitle">Chỉnh Sửa Tin Tức</h2>
+                <form id="editForm">
+                    <label for="editTitle">Tên tin tức:</label>
+                    <input type="text" id="editTitle" required>
+                    <label for="editCategory">Mục bài viết:</label>
+                    <select id="editCategory" required>
+                        <option value="thongbao">Thông báo quan trọng</option>
+                        <option value="bantochuc">Tin từ ban tổ chức</option>
+                    </select>
+                     <label for="editOrder">Vị trí hiển thị:</label>
+                    <input type="number" id="editOrder" required value="1" min="1">
+                     <label for="editContent">Chi tiết tin tức:</label>
+                    <textarea id="editContent" rows="5" required></textarea>
+                    <button type="button" onclick="saveEdit()">Lưu</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+    tinymce.init({
+        selector: '#content',
+         plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+       menubar: false,
+         content_style: 'body { font-family: Nunito, sans-serif; font-size: 1rem; }',
+        height: 300,
+        file_picker_callback: function (callback, value, meta) {
+                var input = document.createElement('input');
+                 input.setAttribute('type', 'file');
+                input.setAttribute('accept', 'image/*');
+                input.onchange = function () {
+                    var file = input.files[0];
+                  var reader = new FileReader();
+                    reader.onload = function(e) {
+                        callback(e.target.result, {alt: file.name});
+                    }
+                  reader.readAsDataURL(file);
+               };
+             input.click();
+        },
+    });
+     tinymce.init({
+        selector: '#editContent',
+         plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+         menubar: false,
+        content_style: 'body { font-family: Nunito, sans-serif; font-size: 1rem; }',
+        height: 300,
+         file_picker_callback: function (callback, value, meta) {
+                 var input = document.createElement('input');
+               input.setAttribute('type', 'file');
+               input.setAttribute('accept', 'image/*');
+                 input.onchange = function () {
+                  var file = input.files[0];
+                    var reader = new FileReader();
+                     reader.onload = function(e) {
+                         callback(e.target.result, {alt: file.name});
+                    }
+                 reader.readAsDataURL(file);
+              };
+             input.click();
+         },
+    });
+      const newsTable = document.getElementById('newsTable').getElementsByTagName('tbody')[0];
+        let allNews = JSON.parse(localStorage.getItem('artcNews')) || [];
+         let editNewsId = null;
+        const modal = document.getElementById("editModal");
+       const closeBtn = document.getElementById("closeEditModal");
+       const editTitleInput = document.getElementById('editTitle');
+        const editCategorySelect = document.getElementById('editCategory');
+         const editOrderInput = document.getElementById('editOrder');
+         const editContentTextarea = document.getElementById('editContent');
+         let filteredNews = [...allNews];
+        function syncLocalStorage() {
+             localStorage.setItem('artcNews', JSON.stringify(allNews));
+       }
+       function renderNewsTable() {
+            newsTable.innerHTML = ''; // Clear table
+            filteredNews.forEach(news => {
+                const row = newsTable.insertRow();
+               const idCell = row.insertCell();
+                 const titleCell = row.insertCell();
+                 const categoryCell = row.insertCell();
+                 const orderCell = row.insertCell();
+                const actionCell = row.insertCell();
+               idCell.textContent = news.id;
+                 titleCell.textContent = news.title;
+                 categoryCell.textContent = news.category === 'thongbao' ? 'Thông báo quan trọng' : 'Tin từ ban tổ chức';
+               orderCell.textContent = news.order;
+                const editButton = document.createElement('button');
+               editButton.innerHTML = '<i class="fas fa-edit"></i> Chỉnh sửa';
+                editButton.addEventListener('click', () => openEditModal(news.id));
+               const deleteButton = document.createElement('button');
+                deleteButton.innerHTML = '<i class="fas fa-trash"></i> Xóa';
+               deleteButton.addEventListener('click', () => deleteNews(news.id));
+                 const actionButtons = document.createElement('div');
+               actionButtons.classList.add('action-buttons');
+               actionButtons.appendChild(editButton);
+                 actionButtons.appendChild(deleteButton);
+                 actionCell.appendChild(actionButtons);
+            });
+        }
+         function addNews() {
+           const title = document.getElementById('title').value;
+            const category = document.getElementById('category').value;
+           const content = tinymce.get('content').getContent();
+            const order = parseInt(document.getElementById('order').value, 10);
+            if(!title || !category || !content || isNaN(order) || order <= 0) {
+              alert('Vui lòng điền đầy đủ thông tin và thứ tự phải là số dương');
+                return;
+            }
+            const newId = allNews.length > 0 ? Math.max(...allNews.map(news => news.id)) + 1 : 1;
+           const now = new Date();
+            //Push news và set order
+             const newNews = {
+                  id: newId,
+                title,
+               category,
+                content,
+                createdAt: now.toISOString(),
+               updatedAt: null,
+               order: order,
+            };
+              allNews.forEach(news => {
+               if(news.order >= newNews.order) {
+                   news.order +=1;
+               }
+           });
+             allNews.push(newNews);
+               syncLocalStorage();
+              renderNewsTable();
+               document.getElementById('title').value = '';
+                document.getElementById('order').value = '1';
+             tinymce.get('content').setContent('');
+             alert('Thêm tin tức thành công');
+        }
+         function deleteNews(id) {
+            if(confirm('Bạn có chắc chắn muốn xóa tin tức này không?')) {
+                 allNews = allNews.filter(news => news.id !== id);
+              syncLocalStorage();
+                renderNewsTable();
+            }
+        }
+        function openEditModal(id) {
+            const news = allNews.find(news => news.id === id);
+            if(news) {
+                 editNewsId = id;
+               editTitleInput.value = news.title;
+               editCategorySelect.value = news.category;
+               editOrderInput.value = news.order;
+                tinymce.get('editContent').setContent(news.content);
+               modal.style.display = 'block';
+            }
+         }
+         function saveEdit() {
+             const title = document.getElementById('editTitle').value;
+            const category = document.getElementById('editCategory').value;
+            const content = tinymce.get('editContent').getContent();
+           const order = parseInt(document.getElementById('editOrder').value, 10);
+            if(!title || !category || !content || isNaN(order) || order <= 0) {
+               alert('Vui lòng điền đầy đủ thông tin và thứ tự phải là số dương');
+                return;
+          }
+           const newsIndex = allNews.findIndex(news => news.id === editNewsId);
+             if(newsIndex !== -1) {
+                const now = new Date();
+                const oldOrder = allNews[newsIndex].order;
+                if (oldOrder !== order) {
+                      allNews.forEach(news => {
+                           if(news.id !== editNewsId) {
+                                 if(oldOrder > order && news.order >= order && news.order < oldOrder) {
+                                  news.order += 1;
+                                }else if (oldOrder < order && news.order > oldOrder && news.order <= order ) {
+                                   news.order -= 1;
+                                 }
+                          }
+                     });
+               }
+                allNews[newsIndex] = {
+                    ...allNews[newsIndex],
+                    title,
+                    category,
+                    content,
+                   updatedAt: now.toISOString(),
+                    order: order,
+               };
+                syncLocalStorage();
+                 renderNewsTable();
+                  modal.style.display = "none";
+                alert('Chỉnh sửa thành công');
+             }
+         }
+        function searchNews() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            if(searchTerm) {
+               filteredNews = allNews.filter(news =>
+                    news.title.toLowerCase().includes(searchTerm)
+               );
+            } else {
+              filteredNews = [...allNews];
+            }
+              renderNewsTable();
+       }
+       closeBtn.addEventListener('click', () => {
+            modal.style.display = "none";
+       });
+
+        window.addEventListener('click', (event) => {
+           if(event.target === modal) {
+                 modal.style.display = "none";
+           }
+       });
+        renderNewsTable();
+    </script>
+</body>
+
+</html>

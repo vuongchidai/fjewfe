@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Đấu Trường Trắc Nghiệm</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        .quiz-container {
+            max-width: 1000px;
+            margin: 40px auto 0 auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(60, 120, 200, 0.13);
+            padding: 36px 36px 24px 36px;
+            position: relative;
+            animation: fadeIn 0.7s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .quiz-title {
+            font-size: 2.1em;
+            font-weight: 700;
+            color: #2d7be5;
+            text-align: center;
+            margin-bottom: 18px;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 8px #e0eafc;
+        }
+        .player-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            gap: 30px;
+        }
+        .player-card {
+            flex: 1 1 0;
+            background: linear-gradient(120deg, #e3f0ff 60%, #f8faff 100%);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.07);
+            padding: 14px 10px;
+            text-align: center;
+            position: relative;
+            min-width: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .player-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 8px;
+            border: 3px solid #2d7be5;
+            background: #fff;
+        }
+        .player-card .player-name {
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #2d7be5;
+            margin-bottom: 2px;
+            word-break: break-word;
+        }
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 18px 0 10px 0;
+            font-size: 1.1em;
+            color: #2d7be5;
+            font-weight: 600;
+        }
+        .timer {
+            background: #e3f0ff;
+            color: #2d7be5;
+            border-radius: 8px;
+            padding: 6px 18px;
+            font-size: 1.1em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            box-shadow: 0 1px 4px #b6d0f7;
+        }
+        .question-block {
+            background: #f5faff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+            padding: 18px 18px 10px 18px;
+            margin-bottom: 18px;
+        }
+        .question-title {
+            font-weight: 600;
+            color: #2d7be5;
+            margin-bottom: 8px;
+            font-size: 1.13em;
+        }
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .options-list li {
+            background: #fff;
+            border-radius: 7px;
+            margin-bottom: 10px;
+            padding: 10px 12px;
+            font-size: 1.07em;
+            color: #333;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: background 0.2s, border 0.2s;
+            user-select: none;
+            position: relative;
+        }
+        .options-list li.selected {
+            background: #e3f0ff;
+            border: 2px solid #2d7be5;
+            color: #2d7be5;
+            font-weight: 600;
+        }
+        .options-list li.correct {
+            background: #d1fae5;
+            border: 2px solid #38b2ac;
+            color: #38b2ac;
+            font-weight: 700;
+        }
+        .options-list li.incorrect {
+            background: #ffe0e0;
+            border: 2px solid #e74c3c;
+            color: #e74c3c;
+            font-weight: 700;
+        }
+        .options-list li.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .btn-next {
+            background: linear-gradient(90deg, #2d7be5 60%, #4fd1c5 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 28px;
+            font-size: 1.1em;
+            font-weight: 700;
+            margin: 18px auto 0 auto;
+            display: block;
+            box-shadow: 0 2px 8px #b6d0f7;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .btn-next:hover {
+            background: linear-gradient(90deg, #4fd1c5 60%, #2d7be5 100%);
+            transform: scale(1.04);
+        }
+        .waiting-box {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(60, 120, 200, 0.18);
+            padding: 36px 32px 28px 32px;
+            text-align: center;
+            min-width: 320px;
+            max-width: 90vw;
+            animation: fadeIn 0.5s;
+            margin: 40px auto 0 auto;
+        }
+        .waiting-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #2d7be5;
+            margin-bottom: 10px;
+        }
+        .waiting-progress-bar {
+            width: 100%;
+            background: #e3f0ff;
+            border-radius: 8px;
+            height: 18px;
+            margin: 10px 0 0 0;
+            overflow: hidden;
+        }
+        .waiting-progress-bar-inner {
+            height: 100%;
+            background: linear-gradient(90deg, #2d7be5 60%, #4fd1c5 100%);
+            transition: width 0.4s;
+        }
+        .result-box {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(60, 120, 200, 0.18);
+            padding: 36px 32px 28px 32px;
+            text-align: center;
+            min-width: 320px;
+            max-width: 90vw;
+            animation: fadeIn 0.5s;
+            margin: 40px auto 0 auto;
+        }
+        .result-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #2d7be5;
+            margin-bottom: 10px;
+        }
+        .result-score {
+            font-size: 1.2em;
+            color: #38b2ac;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .result-detail {
+            color: #444;
+            margin-bottom: 18px;
+        }
+        .match-info {
+            background: #f5faff;
+            border-radius: 12px;
+            padding: 18px 18px 10px 18px;
+            margin-bottom: 18px;
+            color: #2d7be5;
+            font-size: 1.05em;
+            text-align: left;
+        }
+        .btn-play-again, .btn-back {
+            background: linear-gradient(90deg, #2d7be5 60%, #4fd1c5 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 28px;
+            font-size: 1em;
+            font-weight: 600;
+            margin-top: 10px;
+            margin-right: 10px;
+            box-shadow: 0 2px 8px #b6d0f7;
+            transition: background 0.2s, transform 0.2s;
+            display: inline-block;
+        }
+        .btn-play-again:hover, .btn-back:hover {
+            background: linear-gradient(90deg, #4fd1c5 60%, #2d7be5 100%);
+            transform: scale(1.04);
+        }
+        @media (max-width: 1100px) {
+            .quiz-container { max-width: 98vw; }
+        }
+        @media (max-width: 900px) {
+            .quiz-container { padding: 16px 2vw; }
+            .player-row { flex-direction: column; gap: 10px;}
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container position-relative" id="main-container">
+        <div class="quiz-title">Đấu Trường Trắc Nghiệm</div>
+        <div class="player-row">
+            <div class="player-card" id="player1-card">
+                <img class="player-avatar" id="player1-avatar" src="https://api.dicebear.com/7.x/miniavs/svg?seed=me" alt="avatar bạn">
+                <div class="player-name" id="player1-name"></div>
+            </div>
+            <div class="player-card" id="player2-card">
+                <img class="player-avatar" id="player2-avatar" src="https://api.dicebear.com/7.x/miniavs/svg?seed=bot" alt="avatar máy">
+                <div class="player-name" id="player2-name"></div>
+            </div>
+        </div>
+        <div class="score-board">
+            <span>Điểm của bạn: <span id="score1">0</span></span>
+            <span class="timer" id="timer">05:00</span>
+            <span>Điểm máy: <span id="score2">0</span></span>
+        </div>
+        <form id="quiz-form" autocomplete="off">
+            <div id="question-block"></div>
+            <button type="button" class="btn-next" id="btn-next">Câu tiếp</button>
+        </form>
+        <div id="waiting-box" style="display:none;">
+            <div class="waiting-box">
+                <div class="waiting-title">Đang chờ đối phương hoàn thành bài thi...</div>
+                <div class="score-board" style="margin:10px 0 10px 0;">
+                    <span>Điểm của bạn: <span id="score1-wait">0</span></span>
+                    <span class="timer" id="timer-wait">05:00</span>
+                    <span>Điểm máy: <span id="score2-wait">0</span></span>
+                </div>
+                <div class="waiting-progress-bar">
+                    <div class="waiting-progress-bar-inner" id="waiting-progress-bar-inner" style="width:0%"></div>
+                </div>
+                <div id="waiting-progress" style="margin:10px 0 0 0; color:#2d7be5; font-weight:600;"></div>
+            </div>
+        </div>
+        <div id="result-box" style="display:none;">
+            <div class="result-box">
+                <div class="result-title" id="result-title"></div>
+                <div class="result-score" id="result-score"></div>
+                <div class="result-detail" id="result-detail"></div>
+                <div class="match-info" id="match-info"></div>
+                <button class="btn-play-again" onclick="restartGame()">Chơi lại</button>
+                <a href="sandau.html" class="btn-back">Quay về</a>
+            </div>
+        </div>
+    </div>
+<script>
+const questions = [
+    {q: "Thủ đô của Việt Nam là?", options: ["Hà Nội", "Huế", "Đà Nẵng", "TP. Hồ Chí Minh"], answer: 0},
+    {q: "Sông nào dài nhất Việt Nam?", options: ["Sông Hồng", "Sông Mekong", "Sông Đà", "Sông Cửu Long"], answer: 1},
+    {q: "Ai là tác giả Truyện Kiều?", options: ["Nguyễn Du", "Nguyễn Trãi", "Hồ Xuân Hương", "Tố Hữu"], answer: 0},
+    {q: "Biển lớn nhất thế giới là?", options: ["Biển Đông", "Địa Trung Hải", "Thái Bình Dương", "Ấn Độ Dương"], answer: 2},
+    {q: "Đơn vị tiền tệ của Việt Nam?", options: ["Yên", "Đô la", "Đồng", "Euro"], answer: 2},
+    {q: "Ngày Quốc khánh Việt Nam?", options: ["30/4", "2/9", "1/5", "20/11"], answer: 1},
+    {q: "Chùa Một Cột ở thành phố nào?", options: ["Huế", "Hà Nội", "Đà Nẵng", "Hải Phòng"], answer: 1},
+    {q: "Loài vật nào là biểu tượng của năm Tý?", options: ["Trâu", "Chuột", "Rồng", "Ngựa"], answer: 1},
+    {q: "Tỉnh nào nổi tiếng với món phở?", options: ["Nam Định", "Hà Nội", "Hải Phòng", "Huế"], answer: 1},
+    {q: "Ai là Chủ tịch nước đầu tiên của Việt Nam?", options: ["Hồ Chí Minh", "Trần Đại Quang", "Nguyễn Phú Trọng", "Phạm Văn Đồng"], answer: 0},
+    {q: "Dãy núi nào dài nhất Việt Nam?", options: ["Hoàng Liên Sơn", "Trường Sơn", "Bạch Mã", "Tam Đảo"], answer: 1},
+    {q: "Thành phố nào được mệnh danh là thành phố ngàn hoa?", options: ["Đà Lạt", "Huế", "Hà Nội", "Cần Thơ"], answer: 0},
+    {q: "Bánh chưng thường được làm vào dịp nào?", options: ["Tết Nguyên Đán", "Trung Thu", "Quốc Khánh", "Giáng Sinh"], answer: 0},
+    {q: "Ai là tác giả bài thơ 'Tây Tiến'?", options: ["Quang Dũng", "Xuân Diệu", "Chế Lan Viên", "Tố Hữu"], answer: 0},
+    {q: "Vịnh Hạ Long thuộc tỉnh nào?", options: ["Quảng Ninh", "Thanh Hóa", "Nghệ An", "Hải Phòng"], answer: 0},
+    {q: "Động Phong Nha thuộc tỉnh nào?", options: ["Quảng Bình", "Quảng Trị", "Quảng Nam", "Quảng Ngãi"], answer: 0},
+    {q: "Loài hoa nào là biểu tượng của Hà Nội?", options: ["Hoa Sen", "Hoa Sữa", "Hoa Đào", "Hoa Mai"], answer: 1},
+    {q: "Địa danh nào nổi tiếng với cầu Rồng?", options: ["Đà Nẵng", "Huế", "Hà Nội", "Hải Phòng"], answer: 0},
+    {q: "Ai là người phát minh ra bóng đèn điện?", options: ["Newton", "Edison", "Einstein", "Tesla"], answer: 1},
+    {q: "Tỉnh nào nổi tiếng với chè Thái Nguyên?", options: ["Thái Nguyên", "Lâm Đồng", "Hà Giang", "Sơn La"], answer: 0}
+];
+
+let playerName = "Bạn";
+let playerAvatar = "https://api.dicebear.com/7.x/miniavs/svg?seed=me";
+try {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (user && user.fullname) playerName = user.fullname;
+    if (user && user.avatar) playerAvatar = user.avatar;
+} catch(e){}
+
+const botNames = [
+    "Nguyễn Văn Minh", "Trần Thị Mai", "Lê Quốc Hùng", "Phạm Thảo", "Vũ Đức Anh", "Đỗ Thị Hạnh", "Bùi Văn Sơn", "Hoàng Lan", "Đặng Minh Tuấn", "Ngô Thị Hương",
+    "Phan Văn Hòa", "Lý Thị Thu", "Tạ Quốc Việt", "Đinh Thị Hồng", "Trịnh Văn Nam", "Nguyễn Thị Hằng", "Phạm Văn Dũng", "Lê Thị Hoa", "Vũ Minh Châu", "Đỗ Văn Quang",
+    "Bùi Thị Hạnh", "Hoàng Văn Hùng", "Đặng Thị Mai", "Ngô Văn Sơn", "Phan Thị Lan", "Lý Văn Hòa", "Tạ Thị Thu", "Đinh Văn Việt", "Trịnh Thị Hồng", "Nguyễn Văn Nam",
+    "Phạm Thị Hằng", "Lê Văn Dũng", "Vũ Thị Hoa", "Đỗ Minh Châu", "Bùi Văn Quang", "Hoàng Thị Hạnh", "Đặng Văn Hùng", "Ngô Thị Mai", "Phan Văn Sơn", "Lý Thị Lan",
+    "Tạ Văn Hòa", "Đinh Thị Thu", "Trịnh Văn Việt", "Nguyễn Thị Hồng", "Phạm Văn Nam", "Lê Thị Hằng", "Vũ Văn Dũng", "Đỗ Thị Hoa", "Bùi Minh Châu", "Hoàng Văn Quang"
+];
+let botName, botAvatar;
+
+let userScore, botScore;
+let userAnswers, botAnswers;
+let botCorrectCount;
+let botCorrectIdxs;
+let botAnswerTimes;
+let botAnswerRealTimes;
+let userAnswerTimes;
+let currentQuestion;
+let timeLeft, timerInt;
+let matchStartTime;
+let matchEndTime;
+let botFinished, userFinished;
+let waitingTimerInt;
+
+function initializeGame() {
+    botName = botNames[Math.floor(Math.random()*botNames.length)];
+    botAvatar = "https://api.dicebear.com/7.x/miniavs/svg?seed=" + encodeURIComponent(botName.replace(/\s/g,'') + Math.floor(Math.random()*10000));
+
+    document.getElementById('player1-name').textContent = playerName;
+    document.getElementById('player2-name').textContent = botName;
+    document.getElementById('player1-avatar').src = playerAvatar;
+    document.getElementById('player2-avatar').src = botAvatar;
+
+    userScore = 0, botScore = 0;
+    userAnswers = Array(questions.length).fill(null);
+    botAnswers = Array(questions.length).fill(null);
+    botCorrectCount = [13,14,15,16,17,18,19].sort(()=>Math.random()-0.5)[0];
+    botCorrectIdxs = shuffle([...Array(questions.length).keys()]).slice(0, botCorrectCount);
+    botAnswerTimes = Array(questions.length).fill(0);
+    botAnswerRealTimes = Array(questions.length).fill(0);
+    userAnswerTimes = Array(questions.length).fill(0);
+    currentQuestion = 0;
+    timeLeft = 300;
+    matchStartTime = new Date();
+    matchEndTime = null;
+    botFinished = false;
+    userFinished = false;
+
+    document.getElementById('score1').textContent = "0";
+    document.getElementById('score2').textContent = "0";
+    document.getElementById('score1-wait').textContent = "0";
+    document.getElementById('score2-wait').textContent = "0";
+    document.getElementById('timer').textContent = formatTime(timeLeft);
+    document.getElementById('timer-wait').textContent = formatTime(timeLeft);
+
+    prepareBotAnswers();
+    renderQuestion(currentQuestion);
+
+    clearInterval(timerInt);
+    clearInterval(waitingTimerInt);
+
+    timerInt = setInterval(updateTimer,1000);
+    updateTimer();
+    botUpdateScoreInterval = setInterval(botUpdateScore, 500);
+
+    document.getElementById('quiz-form').classList.remove('disabled');
+    document.getElementById('quiz-form').style.display = "block";
+    document.getElementById('question-block').style.display = "block";
+    document.getElementById('waiting-box').style.display = "none";
+    document.getElementById('result-box').style.display = "none";
+}
+
+function prepareBotAnswers() {
+    let t = 0;
+    for(let i=0;i<questions.length;i++) {
+        if(botCorrectIdxs.includes(i)) {
+            botAnswers[i] = questions[i].answer;
+        } else {
+            let opts = [0,1,2,3].filter(x=>x!==questions[i].answer);
+            botAnswers[i] = opts[Math.floor(Math.random()*opts.length)];
+        }
+        let delta = 2 + Math.floor(Math.random()*6);
+        t += delta;
+        botAnswerTimes[i] = t;
+    }
+}
+
+function shuffle(arr) {
+    let a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+        let j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+}
+
+function renderQuestion(idx) {
+    const q = questions[idx];
+    let html = `
+        <div class="question-block">
+            <div class="question-title">Câu ${idx+1}: ${q.q}</div>
+            <ul class="options-list" id="options-list">
+                ${q.options.map((opt, oidx) => `
+                    <li data-opt="${oidx}" ${userAnswers[idx]!==null && userAnswers[idx]===oidx?'class="selected"':''}>${opt}</li>
+                `).join('')}
+            </ul>
+        </div>
+    `;
+    document.getElementById('question-block').innerHTML = html;
+    document.getElementById('options-list').addEventListener('click', function(e){
+        if(e.target.tagName!=='LI') return;
+        if(document.getElementById('quiz-form').classList.contains('disabled')) return;
+        this.querySelectorAll('li').forEach(li=>li.classList.remove('selected'));
+        e.target.classList.add('selected');
+        userAnswers[idx] = +e.target.dataset.opt;
+        userAnswerTimes[idx] = 300 - timeLeft;
+        checkAnswer(idx);
+    });
+    document.getElementById('btn-next').textContent = (idx===questions.length-1)?"Nộp bài":"Câu tiếp";
+    document.getElementById('btn-next').disabled = (userAnswers[idx]===null);
+}
+
+function checkAnswer(idx) {
+    if(userAnswers[idx]!==null) {
+        let correct = userAnswers[idx] === questions[idx].answer;
+        if(correct && !document.getElementById('options-list').querySelector('li.selected').classList.contains('correct')) {
+            userScore++;
+            document.getElementById('score1').textContent = userScore*5;
+        }
+        document.getElementById('options-list').querySelectorAll('li').forEach(li=>{
+            let optIdx = +li.dataset.opt;
+            if(optIdx === questions[idx].answer) li.classList.add('correct');
+            if(optIdx === userAnswers[idx] && !correct) li.classList.add('incorrect','selected');
+            li.classList.add('disabled');
+        });
+        document.getElementById('btn-next').disabled = false;
+    }
+}
+
+let botUpdateScoreInterval;
+
+function botUpdateScore() {
+    let now = 300 - timeLeft;
+    let newBotScore = 0;
+    for(let i=0;i<questions.length;i++) {
+        if(now >= botAnswerTimes[i]) {
+            if(botAnswers[i] === questions[i].answer) newBotScore++;
+            if(botAnswerRealTimes[i] === 0) botAnswerRealTimes[i] = now;
+        }
+    }
+    botScore = newBotScore;
+    document.getElementById('score2').textContent = botScore*5;
+    if(document.getElementById('waiting-box').style.display === "block") {
+        document.getElementById('score2-wait').textContent = botScore*5;
+    }
+    if(!botFinished && now >= botAnswerTimes[questions.length-1]) {
+        botFinished = true;
+        if(userFinished) showResult();
+    }
+}
+
+function formatTime(timeInSeconds) {
+    let m = Math.floor(timeInSeconds/60), s = timeInSeconds%60;
+    return `${m<10?'0':''}${m}:${s<10?'0':''}${s}`;
+}
+
+function updateTimer() {
+    if(timeLeft<=0) {
+        clearInterval(timerInt);
+        finishQuiz();
+        return;
+    }
+
+    timeLeft--;
+    document.getElementById('timer').textContent = formatTime(timeLeft);
+    if(document.getElementById('waiting-box').style.display === "block") {
+        document.getElementById('timer-wait').textContent = formatTime(timeLeft);
+    }
+}
+
+document.getElementById('btn-next').onclick = function() {
+    if(currentQuestion<questions.length-1) {
+        currentQuestion++;
+        renderQuestion(currentQuestion);
+    } else {
+        finishQuiz();
+    }
+};
+
+document.getElementById('quiz-form').addEventListener('click', function(e){
+    if(e.target.closest('li')) {
+        document.getElementById('btn-next').disabled = false;
+    }
+});
+
+function finishQuiz() {
+    clearInterval(timerInt);
+    document.getElementById('quiz-form').classList.add('disabled');
+    userFinished = true;
+    //botUpdateScore(); // Cập nhật điểm cuối cùng của bot
+    matchEndTime = new Date();
+    document.getElementById('quiz-form').style.display = "none";
+    document.getElementById('question-block').style.display = "none";
+    document.getElementById('score1-wait').textContent = userScore*5;
+    document.getElementById('score2-wait').textContent = botScore*5;
+    let m = Math.floor(timeLeft/60), s = timeLeft%60;
+    document.getElementById('timer-wait').textContent = `${m<10?'0':''}${m}:${s<10?'0':''}${s}`;
+    if(botFinished) {
+        showResult();
+    } else {
+        showWaiting();
+    }
+}
+
+function showWaiting() {
+    document.getElementById('waiting-box').style.display = "block";
+    waitingTimerInt = setInterval(()=>{
+        if (botFinished) {
+            clearInterval(waitingTimerInt);
+            document.getElementById('waiting-box').style.display = "none";
+            showResult();
+            return;
+        }
+
+        let now = 300 - timeLeft;
+        let botProgress = Math.min(100, Math.round(100*(now/botAnswerTimes[questions.length-1])));
+        document.getElementById('waiting-progress').textContent = `Đối phương đang làm bài... (${botProgress}%)`;
+        document.getElementById('waiting-progress-bar-inner').style.width = botProgress + "%";
+        document.getElementById('score2-wait').textContent = botScore*5;
+        document.getElementById('timer-wait').textContent = formatTime(timeLeft);
+
+    }, 500);
+}
+
+function showResult() {
+    document.getElementById('waiting-box').style.display = "none";
+    document.getElementById('result-box').style.display = "block";
+    let title = userScore>botScore?"Bạn thắng!":"Đối phương đã thắng!";
+    if(userScore===botScore) title = "🤝 Trận đấu hòa nhau!";
+    document.getElementById('result-title').textContent = title;
+    document.getElementById('result-score').textContent = `Bạn: ${userScore*5} điểm | Đối phương: ${botScore*5} điểm`;
+    document.getElementById('result-detail').textContent = `Bạn đúng ${userScore}/20 câu. Đối phương đúng ${botScore}/20 câu.`;
+    let matchTime = Math.round((matchEndTime - matchStartTime)/1000);
+    let min = Math.floor(matchTime/60), sec = matchTime%60;
+    let timeStr = `${min} phút ${sec<10?'0':''}${sec} giây`;
+    let userCorrectList = userAnswers.map((ans,i)=>ans===questions[i].answer?`✔️`:`❌`).join(' ');
+    let botCorrectList = botAnswers.map((ans,i)=>ans===questions[i].answer?`✔️`:`❌`).join(' ');
+    document.getElementById('match-info').innerHTML = `
+        <b>Thông tin trận đấu:</b><br>
+        Thời gian làm bài: <b>${timeStr}</b><br>
+        <b>${playerName}</b>: ${userScore*5} điểm (${userScore}/20)<br>
+        <b>${botName}</b>: ${botScore*5} điểm (${botScore}/20)<br>
+        <span style="font-size:0.98em;">Đáp án đúng của bạn: ${userCorrectList}</span><br>
+        <span style="font-size:0.98em;">Đáp án đúng của máy: ${botCorrectList}</span>
+    `;
+    document.getElementById('btn-next').disabled = true;
+}
+
+function restartGame() {
+    const now = new Date();
+    const hour = now.getHours();
+    const minute = now.getMinutes();
+
+    if (hour === 0 && minute === 0) {
+        // No restrictions at 00:00
+        initializeGame();
+    } else {
+        const totalMinutes = hour * 60 + minute;
+
+        if (totalMinutes <= 300) { // 05:00
+            initializeGame();
+        } else {
+            alert("Bạn chỉ có thể chơi lại từ 00:00 đến 05:00.");
+        }
+    }
+}
+
+// Initialize the game when the page loads
+initializeGame();
+
+// Chống copy
+document.addEventListener('contextmenu',e=>e.preventDefault());
+document.addEventListener('keydown',e=>{
+    if((e.ctrlKey||e.metaKey)&&['c','v','x','u','s','a'].includes(e.key.toLowerCase())) e.preventDefault();
+    if(e.key==='F12') e.preventDefault();
+});
+document.addEventListener('selectstart',e=>{
+    if(['input','textarea'].includes(e.target.tagName.toLowerCase())) return;
+    e.preventDefault();
+});
+</script>
+</body>
+</html>

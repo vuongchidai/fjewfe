@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sơ Đồ Vị Trí</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles for the body to ensure proper centering and background */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-y: auto;
+            }
+
+            /* Styles for the modal backdrop */
+            .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            }
+            .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            }
+            .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            }
+            .close-button:hover,
+            .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+            }
+            .text-xxs {
+            font-size: 0.65rem;
+            line-height: 0.75rem;
+            }
+
+            /* Styles for highlighting the searched seat */
+            .highlight-seat {
+            outline: 3px solid #ef4444;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+            }
+
+            /* Make seat items (the seat "bóng") a bit larger, enough for 2 lines of text (about 30-40 chars) */
+            .seat-item {
+            width: 104px;
+            height: 62px;
+            min-width: 104px;
+            min-height: 62px;
+            max-width: 104px;
+            max-height: 62px;
+            padding: 0 !important;
+            border-radius: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1px;
+            text-align: center;
+            word-break: break-word;
+            /* No vertical offset, seats are aligned straight in columns */
+            margin-left: 0 !important;
+            /* CSS 5.0: Dịch các cặp ghế đầu mỗi hàng vào trong, giữ thẳng hàng dọc */
+            /* Cột 1 và 2: (index % 6 === 1 hoặc 2) */
+            .seat-item:nth-child(6n+1),
+            .seat-item:nth-child(6n+2) {
+              margin-left: 32px !important; /* Tăng dịch vào một chút */
+            }
+            /* Tăng khoảng cách giữa 2 nhóm (2 ghế đầu và 4 ghế sau) trong mỗi hàng */
+            .seat-item:nth-child(6n+2) {
+              margin-right: 24px !important;
+            }
+            /* Đảm bảo các ghế còn lại không bị dịch */
+            .seat-item:nth-child(6n+3),
+            .seat-item:nth-child(6n+4),
+            .seat-item:nth-child(6n+5),
+            .seat-item:nth-child(6n+6) {
+              margin-left: 0 !important;
+              margin-right: 0 !important;
+            }
+              font-size: 0.6rem;
+            }
+    </style>
+</head>
+<body class="bg-gray-100 p-5 min-h-screen flex items-start justify-center">
+
+    <!-- Main container for the seating chart -->
+    <div class="container bg-white rounded-xl shadow-lg p-6 md:p-8 w-full max-w-7xl mx-auto my-5">
+        <!-- Title and subtitle -->
+        <h1 class="text-3xl md:text-4xl font-extrabold text-center text-gray-800 mb-6 border-b-2 pb-4">
+            Sơ Đồ Phòng Thi
+            <!-- Updated total number of seats to reflect all added seats and their breakdown -->
+            <!-- Font size for this span is now smaller as per user request -->
+            <span id="totalSeatsSummary" class="block text-base md:text-xl font-semibold text-blue-600 mt-2">
+                <!-- This will be populated by JavaScript -->
+            </span>
+        </h1>
+
+        <!-- Search Section -->
+        <div class="flex flex-col md:flex-row items-center justify-center gap-3 mb-8 p-4 bg-blue-50 rounded-lg shadow-sm border border-blue-200">
+            <input type="text" id="sbdSearchInput" placeholder="Nhập SBD để tìm ghế..."
+                   class="w-full md:w-auto flex-grow px-4 py-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-700 text-base shadow-sm">
+            <button id="searchSBDButton"
+                    class="w-full md:w-auto px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-colors duration-200">
+                Tìm kiếm ghế theo SBD
+            </button>
+        </div>
+
+        <h2 class="text-2xl font-bold text-gray-700 mb-4 text-center">Ghế Thí Sinh & Dự Phòng</h2>
+        <!-- Seat Display Area - Grid layout for candidate seats and integrated reserve seats -->
+        <!-- Enforced grid-cols-6 for 6 columns on all screen sizes -->
+        <div id="candidateSeatLayout" class="grid grid-cols-6 gap-3 p-4 rounded-lg bg-gray-50 mb-8">
+            <!-- Candidate and reserve seats will be dynamically populated here by JavaScript -->
+        </div>
+
+        <h2 class="text-2xl font-bold text-gray-700 mb-4 text-center">Khu vực Giám Khảo & Ban Giám Khảo</h2>
+        <!-- Seat Display Area - Grid layout for supervisor and BG seats -->
+        <div id="supervisorAndBgSeatLayout" class="grid grid-cols-6 gap-3 p-4 rounded-lg bg-yellow-50 border border-yellow-200">
+            <!-- Supervisor and BG seats will be dynamically populated here by JavaScript -->
+        </div>
+
+        <!-- Modal for Seat Details -->
+        <div id="seatDetailModal" class="modal">
+            <div class="modal-content">
+                <!-- Added ID to the H2 tag for dynamic content change -->
+                <span class="close-button">&times;</span>
+                <h2 id="modalTitle" class="text-2xl font-bold text-gray-800 mb-4">Thông Tin Chi Tiết Ghế</h2>
+                <div id="modalContent" class="text-lg text-gray-700">
+                    <!-- Details will be loaded here dynamically by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get references to DOM elements for manipulation
+        const totalSeatsSummary = document.getElementById('totalSeatsSummary');
+        const sbdSearchInput = document.getElementById('sbdSearchInput');
+        const searchSBDButton = document.getElementById('searchSBDButton');
+        const candidateSeatLayout = document.getElementById('candidateSeatLayout');
+        const supervisorAndBgSeatLayout = document.getElementById('supervisorAndBgSeatLayout'); // Combined ID
+        const seatDetailModal = document.getElementById('seatDetailModal');
+        const modalContent = document.getElementById('modalContent');
+        const modalTitle = document.getElementById('modalTitle'); // Get reference to modal title
+        const closeButton = document.querySelector('.close-button');
+
+        // Number of candidate seats for SBD and exam board assignment
+        const numberOfCandidateSeats = 350;
+        // Number of reserve seats to be merged into the candidate layout
+        const numberOfReserveSeats = 4;
+        // Number of supervisor seats
+        const numberOfSupervisorSeats = 6;
+        // Number of Ban Giám Khảo seats
+        const numberOfBgSeats = 2;
+
+        // Total seats for display calculation (used in title)
+        const totalDisplaySeats = numberOfCandidateSeats + numberOfReserveSeats + numberOfSupervisorSeats + numberOfBgSeats;
+
+        // Number of columns in the grid for seat position calculation (A01, A02, ..., A06)
+        const colsForPosition = 6;
+
+        // Array to store references to all seat elements and their data for searching
+        const allSeatElements = [];
+
+        /**
+         * Generates a shuffled array of SBD (Số Báo Danh - candidate number) numbers.
+         * SBDs are only generated for the main 350 candidate seats.
+         * @returns {number[]} An array of unique, shuffled SBDs for 350 candidates.
+         */
+        function generateShuffledSBDs() {
+            const sbdNumbers = [];
+            for (let i = 100001; i <= 100000 + numberOfCandidateSeats; i++) {
+                sbdNumbers.push(i);
+            }
+            // Shuffle the array using the Fisher-Yates (Knuth) shuffle algorithm
+            for (let i = sbdNumbers.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [sbdNumbers[i], sbdNumbers[j]] = [sbdNumbers[j], sbdNumbers[i]]; // Swap elements
+            }
+            return sbdNumbers;
+        }
+
+        // Generate the shuffled SBDs once when the script loads
+        const shuffledSBDs = generateShuffledSBDs();
+
+        /**
+         * Generates a shuffled array of exam board assignments for candidate seats.
+         * Ensures the correct number of candidates for each board (A: 150, B: 100, C: 100).
+         * @returns {string[]} An array of shuffled exam board strings.
+         */
+        function generateShuffledExamBoards() {
+            const examBoards = [];
+            for (let i = 0; i < 150; i++) examBoards.push('BẢNG A');
+            for (let i = 0; i < 100; i++) examBoards.push('BẢNG B');
+            for (let i = 0; i < 100; i++) examBoards.push('BẢNG C');
+
+            // Shuffle the exam boards array
+            for (let i = examBoards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [examBoards[i], examBoards[j]] = [examBoards[j], examBoards[i]];
+            }
+            return examBoards;
+        }
+
+        // Generate the shuffled exam boards once when the script loads
+        const shuffledExamBoards = generateShuffledExamBoards();
+
+        /**
+         * Converts a 1-based number to its corresponding uppercase alphabet character(s).
+         * For example: 1 -> A, 2 -> B, ..., 26 -> Z, 27 -> AA, 28 -> AB.
+         * @param {number} num - The number to convert (must be a positive integer).
+         * @returns {string} The alphabet character(s) representing the number.
+         */
+        function numToAlpha(num) {
+            let s = '';
+            while (num > 0) {
+                let rem = num % 26;
+                if (rem === 0) {
+                    s = 'Z' + s;
+                    num = (num / 26) - 1;
+                } else {
+                    s = String.fromCharCode((rem - 1) + 'A'.charCodeAt(0)) + s;
+                    num = Math.floor(num / 26);
+                }
+            }
+            return s;
+        }
+
+        /**
+         * Displays the modal with detailed information about a clicked seat.
+         * @param {Object} details - An object containing seat details (stt, sbd, position, code, symbol, examBoard).
+         */
+        function showSeatDetails(details) {
+            modalTitle.textContent = 'Thông Tin Chi Tiết Ghế'; // Set modal title for details
+            // Populate the modal content area with the provided details
+            modalContent.innerHTML = `
+                <p><strong class="text-blue-600">STT (Số thứ tự):</strong> ${details.stt}</p>
+                <p><strong class="text-blue-600">SBD (Số báo danh):</strong> ${details.sbd}</p>
+                <p><strong class="text-blue-600">Vị trí:</strong> ${details.position}</p>
+                <p><strong class="text-blue-600">Mã ghế:</strong> ${details.code}</p>
+                <p><strong class="text-blue-600">Ký hiệu ghế:</strong> ${details.symbol}</p>
+                <p><strong class="text-blue-600">Bảng thi:</strong> ${details.examBoard}</p>
+                <p><strong class="text-green-600">Trạng thái:</strong> BTC đã xác nhận</p>
+            `;
+            // Make the modal visible using flex display for centering
+            seatDetailModal.style.display = 'flex';
+        }
+
+        /**
+         * Displays a "not found" message in the modal, acting as a popup.
+         */
+        function showNotFoundMessage() {
+            modalTitle.textContent = 'Thông Báo Tìm Kiếm'; // Set modal title for notification
+            modalContent.innerHTML = `
+                <p class="text-lg text-red-600 font-semibold">Không tìm thấy SBD này trong sơ đồ ghế.</p>
+                <p class="text-sm text-gray-500 mt-2">Vui lòng kiểm tra lại Số Báo Danh bạn đã nhập.</p>
+            `;
+            seatDetailModal.style.display = 'flex';
+        }
+
+        // Event listener to close the modal when the close button is clicked
+        closeButton.onclick = function() {
+            seatDetailModal.style.display = 'none'; // Hide the modal
+        }
+
+        // Event listener to close the modal when clicking anywhere outside of the modal content
+        window.onclick = function(event) {
+            if (event.target === seatDetailModal) {
+                seatDetailModal.style.display = 'none'; // Hide the modal
+            }
+        }
+
+        /**
+         * Creates a seat element with common styling and data attributes.
+         * @param {Object} details - Object containing seat details.
+         * @param {string[]} additionalClasses - Optional array of Tailwind classes to add.
+         * @param {string} innerHtmlContent - The HTML content to put inside the seat div.
+         * @returns {HTMLElement} The created seat div element.
+         */
+        function createSeatElement(details, additionalClasses = [], innerHtmlContent = '') {
+            const seat = document.createElement('div');
+            seat.classList.add(
+                'seat-item', 'p-2', 'rounded-lg', 'shadow-md', 'flex', 'flex-col',
+                'items-center', 'justify-center', 'text-center', 'text-xs', 'font-medium',
+                'cursor-pointer', 'hover:shadow-lg', 'hover:scale-105', 'transition-all',
+                'duration-200', 'border', 'aspect-square',
+                ...additionalClasses // Add any specific classes for this seat type
+            );
+
+            // Set data attributes for easy retrieval
+            for (const key in details) {
+                seat.dataset[key] = details[key];
+            }
+
+            // Set the inner HTML content
+            seat.innerHTML = innerHtmlContent;
+
+            // Add click event listener to show full details in a modal
+            // This is for direct clicks on seats, not for SBD search
+            seat.addEventListener('click', () => {
+                // Remove highlight from all seats when a new seat is clicked
+                allSeatElements.forEach(s => s.classList.remove('highlight-seat'));
+                showSeatDetails(details);
+            });
+
+            return seat;
+        }
+
+        /**
+         * Populates the seat layout grids with individual seat elements for candidates, supervisors, and BG.
+         */
+        function populateSeats() {
+            // Update the total seats summary text with detailed breakdown
+            totalSeatsSummary.textContent = `Tổng số ${totalDisplaySeats} chỗ ngồi (${numberOfCandidateSeats} thí sinh, ${numberOfReserveSeats} dự phòng, ${numberOfSupervisorSeats} giám khảo, ${numberOfBgSeats} ban giám khảo)`;
+
+            // Phase 1: Candidate Seats (1 to 350) and Reserve Seats (351-354)
+            const totalCandidateAndReserveSeats = numberOfCandidateSeats + numberOfReserveSeats;
+            for (let i = 1; i <= totalCandidateAndReserveSeats; i++) {
+                const stt = i;
+                const rowNum = Math.ceil(stt / colsForPosition);
+                const colNum = (stt - 1) % colsForPosition + 1;
+                const position = `${numToAlpha(rowNum)}${String(colNum).padStart(2, '0')}`;
+                const code = `GH-${String(stt).padStart(3, '0')}`;
+                const symbol = `KSH-${String(stt).padStart(3, '0')}`;
+
+                let sbd;
+                let examBoard;
+                let additionalTextContent;
+                let classes = ['bg-white', 'border-gray-200', 'text-gray-700'];
+
+                if (stt <= numberOfCandidateSeats) { // Regular candidate seats
+                    sbd = shuffledSBDs[stt - 1];
+                    examBoard = shuffledExamBoards[stt - 1];
+                    additionalTextContent = examBoard; // Display full exam board string
+                } else { // Reserve seats
+                    sbd = 'N/A'; // Reserve seats don't have SBD
+                    examBoard = 'Ghế Dự Phòng';
+                    additionalTextContent = '(Dự phòng)';
+                    classes = ['bg-orange-100', 'border-orange-300', 'text-orange-800'];
+                }
+
+                const details = { stt, sbd: String(sbd), position, code, symbol, examBoard }; // Convert SBD to string for consistent comparison
+                const seat = createSeatElement(
+                    details,
+                    classes,
+                    `<span class="text-sm font-bold text-blue-700">${position}</span>
+                     <span class="text-xs text-gray-500">SBD: ${sbd}</span>
+                     <span class="text-xxs text-gray-500 mt-0.5">${additionalTextContent}</span>` // Ensure text-xxs if needed
+                );
+                candidateSeatLayout.appendChild(seat);
+                allSeatElements.push(seat); // Store reference to the element
+            }
+
+            // Phase 2: Supervisor and Ban Giám Khảo Seats (GK01-GK06, BG01-BG02)
+            const totalSupervisorAndBgSeats = numberOfSupervisorSeats + numberOfBgSeats;
+            for (let i = 1; i <= totalSupervisorAndBgSeats; i++) {
+                const stt = totalCandidateAndReserveSeats + i; // Unique STT
+                const sbd = 'N/A'; // Supervisor/BG seats don't have SBD
+                let position;
+                let code;
+                let symbol;
+                let examBoard;
+                let additionalTextContent;
+                let classes;
+
+                if (i <= numberOfSupervisorSeats) { // Supervisor seats (GK)
+                    position = `GK${String(i).padStart(2, '0')}`;
+                    code = `GK-${String(i).padStart(2, '0')}`;
+                    symbol = `KSH-GK${String(i).padStart(2, '0')}`;
+                    examBoard = 'Ghế Giám Khảo';
+                    additionalTextContent = '(Giám khảo)';
+                    classes = ['bg-yellow-100', 'border-yellow-300', 'text-yellow-800'];
+                } else { // Ban Giám Khảo seats (BG)
+                    const bgIndex = i - numberOfSupervisorSeats; // Calculate index for BG (1 or 2)
+                    position = `BG${String(bgIndex).padStart(2, '0')}`;
+                    code = `BG-${String(bgIndex).padStart(2, '0')}`;
+                    symbol = `KSH-BG${String(bgIndex).padStart(2, '0')}`;
+                    examBoard = 'Ghế Ban Giám Khảo';
+                    additionalTextContent = '(Ban Giám Khảo)';
+                    classes = ['bg-green-100', 'border-green-300', 'text-green-800'];
+                }
+
+                const details = { stt, sbd: String(sbd), position, code, symbol, examBoard };
+                const seat = createSeatElement(
+                    details,
+                    classes,
+                    `<span class="text-sm font-bold">${position}</span>
+                     <span class="text-xs">SBD: ${sbd}</span>
+                     <span class="text-xxs mt-0.5">${additionalTextContent}</span>`
+                );
+                supervisorAndBgSeatLayout.appendChild(seat);
+                allSeatElements.push(seat); // Store reference to the element
+            }
+        }
+
+        /**
+         * Handles the search for a seat based on the SBD entered by the user.
+         */
+        function handleSearchSBD() {
+            const searchSbd = sbdSearchInput.value.trim();
+
+            // Remove previous highlights from all seats
+            allSeatElements.forEach(seat => {
+                seat.classList.remove('highlight-seat');
+            });
+
+            // Hide the modal if it was open from a previous search or click
+            seatDetailModal.style.display = 'none';
+
+            if (!searchSbd) {
+                showNotFoundMessage(); // Show a message if input is empty
+                return;
+            }
+
+            let foundSeat = null;
+            for (const seatElement of allSeatElements) {
+                // Use === for strict comparison, ensuring both are strings
+                if (seatElement.dataset.sbd === searchSbd) {
+                    foundSeat = seatElement;
+                    break;
+                }
+            }
+
+            if (foundSeat) {
+                foundSeat.classList.add('highlight-seat'); // Highlight the found seat
+                foundSeat.scrollIntoView({ behavior: 'smooth', block: 'center' }); // Scroll to it
+                // Do NOT call showSeatDetails here as per user request for SBD search
+            } else {
+                showNotFoundMessage(); // Show not found message if no match
+            }
+        }
+
+        // Attach event listener to the search button
+        searchSBDButton.addEventListener('click', handleSearchSBD);
+
+        // Allow searching by pressing Enter key in the input field
+        sbdSearchInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                handleSearchSBD();
+            }
+        });
+
+        // Call the function to populate seats when the DOM is fully loaded and parsed
+        document.addEventListener('DOMContentLoaded', populateSeats);
+    </script>
+</body>
+</html>

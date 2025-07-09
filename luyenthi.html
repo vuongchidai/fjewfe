@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luyện Thi | Trang cá nhân</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            margin: 0;
+            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* --- Navbar Styles --- */
+        .navbar {
+            padding: 0.8rem 1.5rem;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1030;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* --- Menu Trigger (Mobile Icon) --- */
+        .menu-trigger {
+            position: relative;
+            cursor: pointer;
+            display: none; /* Hidden by default */
+        }
+
+        .menu-trigger-icon {
+            width: 40px;
+            height: 40px;
+            vertical-align: middle;
+            transition: transform 0.3s ease;
+        }
+        .menu-trigger:hover .menu-trigger-icon {
+            transform: scale(1.1);
+        }
+
+        /* --- Menu Popup (Mobile Dropdown) --- */
+        .menu-popup {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            background: white;
+            padding: 10px 0;
+            border: 1px solid #eee;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            display: none;
+            border-radius: 10px;
+            min-width: 180px;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .menu-popup.active {
+            display: block;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .menu-popup ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu-popup li a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-weight: 500;
+            color: #555;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .menu-popup li a i {
+             margin-right: 12px;
+             width: 20px;
+             text-align: center;
+             font-size: 1.1em;
+        }
+
+        .menu-popup li:hover a {
+            background-color: #f8f9fa;
+            color: #2980b9;
+        }
+
+         /* --- Navigation Links (Desktop) --- */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; /* Align to the left */
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #333;
+            text-decoration: none;
+            margin-right: 15px;
+            margin-bottom: 10px;
+            padding: 12px 18px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            text-align: center;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .nav-links a:hover {
+            background-color: #e0f7f5;
+            transform: translateY(-2px);
+            box-shadow: 0 3px 7px rgba(0, 0, 0, 0.15);
+        }
+        .nav-links i {
+            margin-bottom: 8px;
+            font-size: 1.8em;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover i {
+            color: #2980b9;
+        }
+        @media (min-width: 768px) {
+            .nav-links {
+                justify-content: flex-start;
+            }
+            .nav-links a {
+                flex-direction: row;
+                margin-right: 25px;
+                text-align: left;
+                align-items: center;
+            }
+            .nav-links i{
+                margin-right: 10px;
+                margin-bottom: 0;
+                font-size: 1.1em;
+            }
+        }
+
+        /* --- Profile Header (Right) --- */
+        .profile-header-container {
+            position: relative;
+        }
+
+        .profile-header {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            background-color: white;
+            padding: 8px 15px;
+            border-radius: 25px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #eee;
+        }
+        .profile-header i {
+            color: #3498db;
+            margin-right: 8px;
+            font-size: 1.3em;
+        }
+        .profile-header span {
+            font-weight: 500;
+            color: #333;
+        }
+        .profile-header:hover {
+            background-color: #e9f5fe;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .profile-header:hover i {
+            color: #217dbb;
+        }
+
+        /* --- Profile Popup (Dropdown from Profile Header) --- */
+        .profile-popup {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: white;
+            padding: 10px 0;
+            border: 1px solid #eee;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            display: none;
+            border-radius: 10px;
+            min-width: 200px;
+            transform: translateY(10px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .profile-popup.active {
+            display: block;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .profile-popup ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .profile-popup li {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-weight: 500;
+            color: #555;
+            border-bottom: 1px solid #f0f0f0;
+        }
+         .profile-popup li:last-child {
+            border-bottom: none;
+        }
+
+        .profile-popup li:hover {
+            background-color: #f8f9fa;
+            color: #2c3e50;
+        }
+
+        /* --- Main Content Area --- */
+         .main-content {
+            padding-top: 100px;
+            padding-left: 15px;
+            padding-right: 15px;
+         }
+
+        /* --- Rest of your existing styles --- */
+        .popup {
+            position: fixed;
+            top: auto; /* Changed to auto */
+            bottom: 0; /* Position at the bottom */
+            left: 50%; /* Horizontally center */
+            transform: translateX(-50%) scale(0.8); /* Center and scale down */
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 10px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            display: none;
+            max-height: 95vh;
+            width: 100%;
+            max-width: 1200px;
+            transition: transform 0.90s ease, opacity 0.9s ease, visibility 0.9s ease; /* Zoom and fade */
+            opacity: 0;
+            visibility: hidden; /* Hide initially */
+            border-radius: 15px;
+        }
+        .popup.active {
+            display: block;
+            transform: translateX(-50%) scale(1); /* Zoom to normal size */
+            opacity: 1;
+            visibility: visible; /* Make visible */
+        }
+
+        .popup-content { /* Container for popup scrollable content */
+            padding: 30px;
+            max-height: calc(95vh - 60px); /* 95vh - (top+bottom padding) */
+            overflow-y: auto;
+             position: relative; /* Required for absolute positioning of close button */
+        }
+
+        #info-popup .popup-content p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+            color: #666;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .table-rounds {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            font-size: 1rem;
+            width: 100%;
+            margin: 0 auto;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 20px;
+        }
+        .table-rounds thead {
+             background: linear-gradient(to right, #4CAF50, #8BC34A);
+            color: white;
+        }
+        .table-rounds th,
+        .table-rounds td {
+            text-align: center;
+            padding: 15px 12px;
+            border-bottom: 1px solid #eee;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+        .table-rounds th {
+            font-weight: 600;
+        }
+        .table-rounds td {
+            color: #555;
+        }
+        .table-rounds tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .table-rounds tbody tr:hover {
+            background-color: #f0f4f0;
+            transition: background-color 0.3s ease;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .btn-round {
+            background: linear-gradient(to right, #388E3C, #66BB6A);
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            white-space: nowrap;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 100px;
+        }
+        .btn-round:hover {
+             background: linear-gradient(to right, #2E7D32, #4CAF50);
+            transform: translateY(-2px);
+            box-shadow: 0 3px 7px rgba(0, 0, 0, 0.15);
+        }
+        .btn-round i {
+            margin-right: 5px;
+            font-size: 1.1em;
+        }
+        .btn-not-open {
+            background-color: #ccc;
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 25px;
+            font-size: 1rem;
+            white-space: nowrap;
+            cursor: not-allowed;
+            opacity: 0.8;
+             min-width: 100px;
+        }
+        .not-eligible {
+            color: #999;
+            font-style: italic;
+            padding: 10px 22px;
+            border-radius: 25px;
+            font-size: 1rem;
+            white-space: nowrap;
+            display: inline-block;
+             min-width: 100px;
+            text-align: center;
+        }
+        .btn-close { /* Used in popups */
+            float: right;
+            background-image: url('https://media.istockphoto.com/id/1131230925/vi/vec-to/d%E1%BA%A5u-ki%E1%BB%83m-bi%E1%BB%83u-t%C6%B0%E1%BB%A3ng-ch%E1%BB%AF-th%E1%BA%ADp-%C4%91%E1%BB%8F-%C4%91%C6%A1n-gi%E1%BA%A3n-vector.jpg?s=612x612&w=0&k=20&c=Zl4pvbt2-7JoQCohB1JdIf2JKS-BoHbhQGNhmhwaiSA=');
+            background-size: contain;
+            background-color: transparent;
+            width: 26px;
+            height: 26px;
+            border: 0;
+            cursor: pointer;
+            background-repeat: no-repeat;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+        .btn-close:hover {
+            opacity: 1;
+        }
+
+        .profile-picture-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+        .profile-picture-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+         .profile-picture-container input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .profile-picture-container::before {
+            content: "\f030";
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 2.5rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .profile-picture-container:hover::before {
+            opacity: 1;
+        }
+
+        #edit-profile-btn {
+            background: linear-gradient(to right, #42A5F5, #64B5F6);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-weight: 500;
+             margin-bottom: 20px;
+        }
+        #edit-profile-btn:hover {
+             background: linear-gradient(to right, #2979FF, #448AFF);
+            transform: translateY(-2px);
+            box-shadow: 0 3px 7px rgba(0, 0, 0, 0.15);
+        }
+        .form-control:disabled {
+            background: #f0f0f0;
+            cursor: not-allowed;
+            opacity: 0.7;
+            border: 1px solid #dcdcdc;
+            color: #777;
+        }
+        #rounds-table-container {
+            margin-bottom: 100px;
+        }
+        h1.text-center {
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .table-container{
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+
+        .day-counter {
+            font-size: 0.9rem;
+            color: #e74c3c;
+            font-weight: 500;
+            display: block;
+            margin-top: 5px;
+        }
+        #current-time {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            color: #777;
+        }
+
+        #notification-popup {
+
+             z-index: 1002;
+        }
+
+        #notification-popup .popup-content {
+            padding: 30px;
+            text-align: center;
+        }
+         #notification-popup h3 {
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        #notification-popup .popup-content img {
+            max-width: 90%;
+            max-height: 400px;
+            display: block;
+            margin: 25px auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        #notification-popup .popup-content p{
+            font-size: 1.1em;
+            line-height: 1.7;
+            color: #666;
+            margin-bottom: 25px;
+            text-align: left;
+            padding: 0 15px;
+        }
+
+        .form-label{
+            font-weight: 500;
+            color: #34495e;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .form-control{
+             border-radius: 25px;
+             padding: 12px 18px;
+             font-size: 1rem;
+             border: 1px solid #dcdcdc;
+             transition: all 0.3s ease;
+             box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .form-control:focus{
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        .btn-primary{
+            background: linear-gradient(to right, #3498db, #5bc0de);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary:hover{
+             background: linear-gradient(to right, #2980b9, #34a2ba);
+            transform: translateY(-2px);
+            box-shadow: 0 3px 7px rgba(0, 0, 0, 0.15);
+        }
+        .d-grid{
+            gap: 15px;
+        }
+
+        /* --- MEDIA QUERIES --- */
+        @media (max-width: 768px) {
+            /* Show the menu trigger on small screens */
+            .menu-trigger {
+                display: block;
+            }
+
+            /* Hide the standard nav-links on small screens */
+            .nav-links {
+                display: none;
+            }
+        }
+        @media (min-width: 769px) {
+             .menu-trigger {
+                display: none; /* Hide the mobile trigger on larger screens */
+            }
+            .nav-links {
+                 display: flex; /* Show the desktop links */
+            }
+        }
+
+        /* --- Popup Scrollable Content Area --- */
+         @media (max-height: 600px) { /* Example breakpoint, adjust as needed */
+            .popup-content {
+                padding: 20px; /* Reduced padding */
+                max-height: 450px; /* Further reduced content area */
+            }
+        }
+        /* Style for the activation code input */
+        #activation-code-input {
+            border-radius: 25px;
+            padding: 10px 15px;
+            font-size: 1rem;
+            border: 1px solid #dcdcdc;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+            width: 200px;
+            margin-right: 10px;
+        }
+        /* Style for the activate button */
+        #activate-button {
+            background: linear-gradient(to right, #388E3C, #66BB6A);
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            white-space: nowrap;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        #activate-button:hover {
+            background: linear-gradient(to right, #2E7D32, #4CAF50);
+            transform: translateY(-2px);
+            box-shadow: 0 3px 7px rgba(0, 0, 0, 0.15);
+        }
+        /* Style for the container holding the activation input and button */
+        .activation-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .table-rounds td.locked-cell {
+            background-color: #f2f2f2; /* Light grey */
+            color: #888; /* Darker grey */
+            cursor: not-allowed; /* Indicate cell is not clickable */
+        }
+        .table-rounds td.locked-cell a {
+            pointer-events: none; /* Disable hover effects */
+            color: inherit; /* Keep color consistent */
+            text-decoration: none; /* No underline on links */
+        }
+        .table-rounds td.locked-cell a:hover {
+            text-decoration: none; /* Ensure no underlines on hover */
+        }
+
+        /* Modern Table Styles */
+        .rounds-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .round-card {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .round-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .round-card-header {
+            background: linear-gradient(to right, #4CAF50, #8BC34A);
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .round-card-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .round-card-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-grow: 1;
+        }
+
+        .round-card-info {
+            margin-bottom: 15px;
+        }
+
+        .round-card-info p {
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .round-card-info strong {
+            font-weight: 600;
+            color: #333;
+            margin-right: 5px;
+        }
+
+        .round-card-actions {
+            text-align: center;
+        }
+
+        .round-card .btn-round {
+            width: 100%;
+            padding: 12px;
+            border-radius: 0;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            font-size: 1.1rem;
+        }
+
+        .round-card .btn-round:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Responsive adjustments for round cards */
+        @media (max-width: 768px) {
+            .rounds-container {
+                padding: 10px;
+            }
+
+            .round-card {
+                width: calc(50% - 20px); /* Two cards per row on smaller screens */
+            }
+        }
+
+        @media (max-width: 576px) {
+            .round-card {
+                width: 100%; /* One card per row on even smaller screens */
+            }
+        }
+
+        /* Style adjustments for locked state */
+        .round-card.locked .round-card-header {
+            background: #ddd;
+            color: #888;
+        }
+
+        .round-card.locked .round-card-body {
+            color: #888;
+        }
+
+        .round-card.locked .btn-round {
+            background: #ccc;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .round-card.locked .btn-round:hover {
+            background: #ccc;
+        }
+    </style>
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <!-- Mobile Menu Trigger -->
+            <div class="menu-trigger">
+                <img src="https://cdn-icons-png.flaticon.com/512/5012/5012401.png" alt="Menu" class="menu-trigger-icon">
+                <div class="menu-popup">
+                    <ul>
+                        <li>
+                            <a href="vaohoc.html">
+                                <i class="fas fa-book" style="color: #3498db;"></i> <span>Vào học</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="luyenthi.html">
+                                <i class="fas fa-pencil-alt" style="color: #e67e22;"></i> <span>Luyện thi</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="dautruong.html">
+                                <i class="fas fa-gamepad" style="color: #9b59b6;"></i> <span>Đấu trường</span>
+                            </a>
+                        </li>
+                         <li>
+                            <a href="trangcanhan.html">
+                                <i class="fas fa-trophy" style="color: #27ae60;"></i> <span>Vào thi</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Standard Navigation Links (Desktop) -->
+            <div class="nav-links">
+                 <a href="vaohoc.html">
+                        <i class="fas fa-book" style="color: #3498db;"></i> <span>Vào học</span>
+                    </a>
+                    <a href="luyenthi.html">
+                        <i class="fas fa-pencil-alt" style="color: #e67e22;"></i> <span>Luyện thi</span>
+                    </a>
+                    <a href="dautruong.html">
+                        <i class="fas fa-gamepad" style="color: #9b59b6;"></i> <span>Đấu trường</span>
+                    </a>
+                    <a href="trangcanhan.html">
+                        <i class="fas fa-trophy" style="color: #27ae60;"></i> <span>Vào thi</span>
+                    </a>
+            </div>
+
+            <!-- Right Profile Section -->
+            <div class="profile-header-container">
+                <div class="profile-header">
+                    <i class="fa fa-user-circle"></i> <span id="header-fullname"></span>
+                </div>
+                 <div class="profile-popup">
+                    <ul>
+                        <li id="info-menu">Thông tin cá nhân</li>
+                        <li id="change-password-menu">Đổi mật khẩu</li>
+                        <li id="logout-menu">Đăng xuất</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid main-content">
+        <h1 class="mb-4 text-center">Danh Sách Vòng Luyện Thi VNO <span id="user-grade-display"></span></h1>
+        <p id="current-time" class="text-center"></p>
+
+        <!-- Activation Code Input -->
+        <div class="activation-container">
+            <input type="text" id="activation-code-input" placeholder="Nhập mã kích hoạt">
+            <button id="activate-button">Kích hoạt</button>
+        </div>
+
+        <!-- Tab Navigation -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="toan-tab" data-bs-toggle="tab" data-bs-target="#toan" type="button" role="tab" aria-controls="toan" aria-selected="true">Ôn luyện Toán</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="van-tab" data-bs-toggle="tab" data-bs-target="#van" type="button" role="tab" aria-controls="van" aria-selected="false">Ôn luyện Ngữ Văn</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="anh-tab" data-bs-toggle="tab" data-bs-target="#anh" type="button" role="tab" aria-controls="anh" aria-selected="false">Ôn luyện Tiếng Anh</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="tonghop-tab" data-bs-toggle="tab" data-bs-target="#tonghop" type="button" role="tab" aria-controls="tonghop" aria-selected="false">Ôn luyện tổng hợp</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="dautruong-tab" data-bs-toggle="tab" data-bs-target="#dautruong" type="button" role="tab" aria-controls="dautruong" aria-selected="false">Ôn luyện Đấu trường SIO</button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="toan" role="tabpanel" aria-labelledby="toan-tab">
+                <div id="rounds-table-container">
+                    <div class="table-container">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-rounds">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Tên vòng thi</th>
+                                        <th>Ngày mở</th>
+                                        <th>Ngày đóng</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="toan-rounds-table-body">
+                                    <!-- Table rows will be inserted by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="van" role="tabpanel" aria-labelledby="van-tab">
+                 <div id="rounds-table-container">
+                    <div class="table-container">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-rounds">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Tên vòng thi</th>
+                                        <th>Ngày mở</th>
+                                        <th>Ngày đóng</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="van-rounds-table-body">
+                                    <!-- Table rows will be inserted by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="anh" role="tabpanel" aria-labelledby="anh-tab">
+                 <div id="rounds-table-container">
+                    <div class
+                    <div class="table-container">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-rounds">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Tên vòng thi</th>
+                                        <th>Ngày mở</th>
+                                        <th>Ngày đóng</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="anh-rounds-table-body">
+                                    <!-- Table rows will be inserted by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tonghop" role="tabpanel" aria-labelledby="tonghop-tab">
+                 <div id="rounds-table-container">
+                    <div class="table-container">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-rounds">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Tên vòng thi</th>
+                                        <th>Ngày mở</th>
+                                        <th>Ngày đóng</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tonghop-rounds-table-body">
+                                    <!-- Table rows will be inserted by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="dautruong" role="tabpanel" aria-labelledby="dautruong-tab">
+                <div id="rounds-table-container">
+                    <div class="table-container">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-rounds">
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Tên vòng thi</th>
+                                        <th>Ngày mở</th>
+                                        <th>Ngày đóng</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dautruong-rounds-table-body">
+                                    <!-- Table rows will be inserted by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Popup -->
+    <div id="info-popup" class="popup">
+        <div class="popup-content">
+            <button type="button" class="btn-close" aria-label="Close"></button>
+            <h3 class="text-center mb-4">Thông tin cá nhân</h3>
+            <div class="profile-picture-container">
+                <img id="profile-picture" src="https://placehold.co/120x120/3498db/fff" alt="Ảnh đại diện">
+                <input type="file" id="profile-image-upload" accept="image/*">
+            </div>
+             <div class="text-center">
+                <button id="edit-profile-btn" class="btn btn-info"> Chỉnh sửa</button>
+             </div>
+            <form id="edit-profile-form">
+                 <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="popup-fullname" class="form-label">Họ và tên</label>
+                        <input type="text" class="form-control" id="popup-fullname" disabled required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="popup-username" class="form-label">Tên đăng nhập</label>
+                        <input type="text" class="form-control" id="popup-username" disabled required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="popup-email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="popup-email" disabled required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="popup-phone" class="form-label">Số điện thoại</label>
+                        <input type="tel" class="form-control" id="popup-phone" disabled required>
+                    </div>
+                     <div class="col-md-12 mb-3">
+                        <label for="popup-address" class="form-label">Địa chỉ</label>
+                        <input type="text" class="form-control" id="popup-address" disabled required>
+                    </div>
+                     <div class="col-md-6 mb-3">
+                        <label for="popup-dob" class="form-label">Ngày sinh</label>
+                        <input type="date" class="form-control" id="popup-dob" disabled required>
+                    </div>
+                     <div class="col-md-6 mb-3">
+                        <label for="popup-grade" class="form-label">Khối</label>
+                        <input type="text" class="form-control" id="popup-grade" disabled required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="popup-school" class="form-label">Trường</label>
+                        <input type="text" class="form-control" id="popup-school" disabled required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="popup-class" class="form-label">Lớp</label>
+                        <input type="text" class="form-control" id="popup-class" disabled required>
+                    </div>
+                </div>
+                <div class="d-grid mt-3">
+                    <button type="submit" class="btn btn-primary" style="display: none">Lưu thông tin</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Change Password Popup -->
+    <div id="change-password-popup" class="popup">
+        <div class="popup-content">
+            <button type="button" class="btn-close" aria-label="Close"></button>
+            <h3 class="text-center mb-4">Đổi mật khẩu</h3>
+            <form id="change-password-form">
+                <div class="mb-3">
+                    <label for="current-password" class="form-label">Mật khẩu hiện tại</label>
+                    <input type="password" class="form-control" id="current-password" required>
+                </div>
+                <div class="mb-3">
+                    <label for="new-password" class="form-label">Mật khẩu mới</label>
+                    <input type="password" class="form-control" id="new-password" required>
+                </div>
+                <div class="mb-3">
+                    <label for="confirm-new-password" class="form-label">Nhập lại mật khẩu mới</label>
+                    <input type="password" class="form-control" id="confirm-new-password" required>
+                </div>
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-primary">Xác nhận đổi mật khẩu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Popup -->
+    <div id="notification-popup" class="popup">
+        <div class="popup-content">
+            <button type="button" class="btn-close" aria-label="Close"></button>
+            <h3 class="text-center">Thông báo quan trọng</h3>
+            <img src="https://blog.xiteb.com/wp-content/uploads/2024/05/360_F_459371368_1C9csykMjOXDUstaTPs6KWpzXMiRuuaT.jpg" alt="Notification Image">
+            <p>Chào mừng bạn đến với trang luyện thi của mình! Hãy cố gắng luyện tập thật tốt để đạt kết quả cao nhất nhé!</p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // --- Get Elements ---
+        const menuTrigger = document.querySelector('.menu-trigger');
+        const menuPopup = document.querySelector('.menu-popup');
+        const profileHeaderContainer = document.querySelector('.profile-header-container'); // Target container now
+        const profileHeader = document.querySelector('.profile-header'); // Keep reference if needed specifically
+        const profilePopup = document.querySelector('.profile-popup');
+        const infoPopup = document.getElementById('info-popup');
+        const editProfileForm = document.getElementById('edit-profile-form');
+        const editProfileBtn = document.getElementById('edit-profile-btn');
+        const changePasswordPopup = document.getElementById('change-password-popup');
+        const changePasswordForm = document.getElementById('change-password-form');
+        const profilePicture = document.getElementById('profile-picture');
+        const profileImageUpload = document.getElementById('profile-image-upload');
+        const userGradeDisplay = document.getElementById('user-grade-display');
+        const currentTimeDisplay = document.getElementById('current-time');
+        const notificationPopup = document.getElementById('notification-popup');
+        const infoMenu = document.getElementById('info-menu');
+        const changePasswordMenu = document.getElementById('change-password-menu');
+        const logoutMenu = document.getElementById('logout-menu');
+
+        //tab content
+        const toanRoundsTableBody = document.getElementById('toan-rounds-table-body');
+        const vanRoundsTableBody = document.getElementById('van-rounds-table-body');
+        const anhRoundsTableBody = document.getElementById('anh-rounds-table-body');
+        const tonghopRoundsTableBody = document.getElementById('tonghop-rounds-table-body');
+        const dautruongRoundsTableBody = document.getElementById('dautruong-rounds-table-body');
+
+        const activationCodeInput = document.getElementById('activation-code-input');
+        const activateButton = document.getElementById('activate-button');
+
+        // --- Login Check ---
+        const loginTime = localStorage.getItem('loginTime');
+        const currentTime = new Date().getTime();
+        if (!loginTime || (currentTime - parseInt(loginTime)) > 24 * 60 * 60 * 1000) {
+            localStorage.removeItem('user');
+            localStorage.removeItem('loginTime');
+            window.location.href = 'dangnhap.html';
+        }
+
+        // --- Load User Data ---
+        const storedUser = localStorage.getItem('user');
+        let user;
+        if (storedUser) {
+            user = JSON.parse(storedUser);
+        } else {
+            window.location.href = 'dangnhap.html';
+        }
+
+        // --- Initial UI Updates ---
+        userGradeDisplay.textContent = user.grade;
+        document.getElementById('header-fullname').textContent = user.fullname;
+        loadInfoPopup(); // Load profile info into popup initially
+
+        // --- Current Time Update ---
+        function updateCurrentTime() {
+            const now = new Date();
+            const formattedTime = now.toLocaleTimeString('vi-VN', { // Use time only for brevity
+                hour: '2-digit',
+                minute: '2-digit'
+            }) + ' - ' + now.toLocaleDateString('vi-VN', { // Add date
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            currentTimeDisplay.textContent = `Thời gian hiện tại: ${formattedTime}`;
+        }
+        updateCurrentTime();
+        setInterval(updateCurrentTime, 60000); // Update every minute
+
+        // --- Popup Toggles & Click Outside ---
+        function createPopupToggler(triggerElement, popupElement) {
+            triggerElement.addEventListener('click', (event) => {
+                event.stopPropagation(); // Prevent click from immediately closing the popup
+                const isActive = popupElement.classList.toggle('active');
+
+                 // Close other popups if opening a new one
+                if (isActive) {
+                     if (popupElement !== menuPopup) menuPopup.classList.remove('active');
+                     if (popupElement !== profilePopup) profilePopup.classList.remove('active');
+                }
+
+                // Add or remove document listener for closing
+                if (isActive) {
+                    document.addEventListener('click', closePopupOnClickOutside, true); // Use capture phase
+                } else {
+                    document.removeEventListener('click', closePopupOnClickOutside, true);
+                }
+            });
+
+             function closePopupOnClickOutside(event) {
+                if (!triggerElement.contains(event.target) && !popupElement.contains(event.target)) {
+                    popupElement.classList.remove('active');
+                    document.removeEventListener('click', closePopupOnClickOutside, true);
+                }
+            }
+        }
+
+        createPopupToggler(menuTrigger, menuPopup);
+        createPopupToggler(profileHeaderContainer, profilePopup); // Use container for click detection
+
+         // --- Close All Other Popups ---
+         function closeAllPopups() {
+            infoPopup.classList.remove('active');
+            changePasswordPopup.classList.remove('active');
+            notificationPopup.classList.remove('active');
+            // Keep menuPopup and profilePopup managed by their own togglers/click outside
+         }
+         document.querySelectorAll('.popup .btn-close').forEach(closeButton => {
+            closeButton.addEventListener('click', (e) => {
+                // Find the parent popup and close it
+                e.target.closest('.popup').classList.remove('active');
+            });
+         });
+
+        // --- Profile Info Handling ---
+        function loadInfoPopup() {
+            document.getElementById('popup-fullname').value = user.fullname || '';
+            document.getElementById('popup-username').value = user.username || '';
+            document.getElementById('popup-email').value = user.email || '';
+            document.getElementById('popup-phone').value = user.phone || '';
+            // Combine address fields if they exist
+            let addressParts = [];
+            if (user.ward) addressParts.push(user.ward);
+            if (user.district) addressParts.push(user.district);
+            if (user.city) addressParts.push(user.city);
+            document.getElementById('popup-address').value = addressParts.join(', ') || '';
+            document.getElementById('popup-grade').value = user.grade || '';
+            document.getElementById('popup-school').value = user.school || '';
+            document.getElementById('popup-class').value = user.class || '';
+            document.getElementById('popup-dob').value = user.dob || '';
+            profilePicture.src = user.profilePicture || "https://placehold.co/120x120/3498db/fff?text=Avatar"; // Added placeholder text
+
+             // Reset form state
+            editProfileForm.querySelectorAll('.form-control:not([id="popup-username"]):not([id="popup-grade"])').forEach(input => {
+                input.disabled = true;
+            });
+            editProfileForm.querySelector('button[type="submit"]').style.display = 'none';
+            editProfileBtn.style.display = 'inline-block'; // Show edit button
+        }
+
+        // --- Event Listeners for Profile Menu Items ---
+        infoMenu.addEventListener('click', function () {
+            profilePopup.classList.remove('active'); // Close profile dropdown
+            loadInfoPopup(); // Ensure latest data is shown and form is reset
+            infoPopup.classList.add('active');
+        });
+
+        changePasswordMenu.addEventListener('click', function () {
+            profilePopup.classList.remove('active'); // Close profile dropdown
+            changePasswordForm.reset(); // Clear previous inputs
+            changePasswordPopup.classList.add('active');
+        });
+
+        logoutMenu.addEventListener('click', function () {
+            profilePopup.classList.remove('active'); // Close profile dropdown
+            localStorage.removeItem('user');
+            localStorage.removeItem('loginTime');
+            // Optionally clear other round-specific data
+            // localStorage.removeItem('score_...');
+            window.location.href = 'dangnhap.html';
+        });
+
+
+        editProfileForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            try {
+                user.fullname = document.getElementById('popup-fullname').value;
+                user.email = document.getElementById('popup-email').value;
+                user.phone = document.getElementById('popup-phone').value;
+                // Simple address parsing (assumes comma separation)
+                const addressValue = document.getElementById('popup-address').value.split(',').map(s => s.trim());
+                user.ward = addressValue[0] || user.ward || '';
+                user.district = addressValue[1] || user.district || '';
+                user.city = addressValue[2] || user.city || '';
+                user.school = document.getElementById('popup-school').value;
+                user.class = document.getElementById('popup-class').value;
+                user.dob = document.getElementById('popup-dob').value;
+
+                localStorage.setItem('user', JSON.stringify(user));
+                loadInfoPopup(); // Reload popup with new data and reset state
+                document.getElementById('header-fullname').textContent = user.fullname; // Update header
+                alert('Cập nhật thông tin cá nhân thành công!');
+                infoPopup.classList.remove('active'); // Close the info popup
+            } catch (error) {
+                console.error("Error updating profile:", error);
+                alert('Đã xảy ra lỗi khi cập nhật thông tin.');
+                // Optionally reset form or keep it open for correction
+                loadInfoPopup(); // Reset to previous state or last saved state
+            }
+        });
+
+        // --- Profile Picture Upload ---
+        profileImageUpload.addEventListener('change', function () {
+            const file = profileImageUpload.files[0];
+            if (file && file.type.startsWith('image/')) { // Basic type check
+                if (file.size > 5 * 1024 * 1024) { // Example: Limit size to 5MB
+                     alert("Kích thước ảnh quá lớn! Vui lòng chọn ảnh dưới 5MB.");
+                     profileImageUpload.value = ''; // Reset input
+                     return;
+                }
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    // Basic check (you might want a more robust check if needed)
+                    if (e.target.result) {
+                        profilePicture.src = e.target.result;
+                        user.profilePicture = e.target.result;
+                        localStorage.setItem('user', JSON.stringify(user));
+                        alert("Ảnh đại diện đã được cập nhật.");
+                    } else {
+                        alert("Không thể đọc file ảnh. Vui lòng thử lại.");
+                        profileImageUpload.value = '';
+                    }
+                };
+                 reader.onerror = function() {
+                     alert("Đã xảy ra lỗi khi đọc file ảnh.");
+                     profileImageUpload.value = '';
+                };
+                reader.readAsDataURL(file);
+            } else if (file) {
+                alert("Định dạng file không hợp lệ. Vui lòng chọn file ảnh (JPG, PNG, GIF, etc.).");
+                profileImageUpload.value = ''; // Reset input
+            }
+        });
+
+        // --- Change Password Logic ---
+        changePasswordForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmNewPassword = document.getElementById('confirm-new-password').value;
+
+            if (!currentPassword || !newPassword || !confirmNewPassword) {
+                 alert('Vui lòng điền đầy đủ thông tin.');
+                 return;
+            }
+            if (user.password !== currentPassword) {
+                alert('Mật khẩu hiện tại không chính xác!');
+                document.getElementById('current-password').focus();
+                return;
+            }
+             if (newPassword.length < 6) { // Example: Minimum length check
+                alert('Mật khẩu mới phải có ít nhất 6 ký tự.');
+                document.getElementById('new-password').focus();
+                return;
+            }
+            if (newPassword !== confirmNewPassword) {
+                alert('Mật khẩu mới và xác nhận mật khẩu không khớp.');
+                document.getElementById('confirm-new-password').focus();
+                return;
+            }
+             if (newPassword === currentPassword) {
+                alert('Mật khẩu mới không được trùng với mật khẩu hiện tại.');
+                document.getElementById('new-password').focus();
+                return;
+            }
+
+            // If all checks pass
+            user.password = newPassword;
+            localStorage.setItem('user', JSON.stringify(user));
+            alert('Đổi mật khẩu thành công!');
+            changePasswordPopup.classList.remove('active');
+        });
+
+        // --- Rounds Data and Rendering ---
+        const toanRounds = [
+        { id: 1, name: 'Vòng 1', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+             { id: 2, name: 'Vòng 2', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 3, name: 'Vòng 3', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 4, name: 'Vòng 4', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html'  },
+            { id: 5, name: 'Vòng 5', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html'  },
+            { id: 6, name: 'Vòng 6', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html'  },
+            { id: 7, name: 'Vòng 7', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 8, name: 'Vòng 8', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 9, name: 'Vòng 9', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 10, name: 'Vòng 10', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 11, name: 'Vòng 11', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 12, name: 'Vòng 12', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 13, name: 'Vòng 13', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+             { id: 14, name: 'Vòng 14', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 15, name: 'Vòng 15', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 16, name: 'Vòng 16', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 17, name: 'Vòng 17', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 18, name: 'Vòng 18', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 19, name: 'Vòng 19', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 20, name: 'Vòng 20', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+        ];
+        const vanRounds = [
+            { id: 1, name: 'Vòng 1', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+             { id: 2, name: 'Vòng 2', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 3, name: 'Vòng 3', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 4, name: 'Vòng 4', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html'  },
+            { id: 5, name: 'Vòng 5', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html'  },
+            { id: 6, name: 'Vòng 6', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html'  },
+            { id: 7, name: 'Vòng 7', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 8, name: 'Vòng 8', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 9, name: 'Vòng 9', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 10, name: 'Vòng 10', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 11, name: 'Vòng 11', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 12, name: 'Vòng 12', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 13, name: 'Vòng 13', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+             { id: 14, name: 'Vòng 14', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 15, name: 'Vòng 15', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 16, name: 'Vòng 16', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 17, name: 'Vòng 17', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 18, name: 'Vòng 18', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 19, name: 'Vòng 19', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 20, name: 'Vòng 20', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+        ];
+        const anhRounds = [
+        { id: 1, name: 'Vòng 1', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+             { id: 2, name: 'Vòng 2', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 3, name: 'Vòng 3', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 4, name: 'Vòng 4', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html'  },
+            { id: 5, name: 'Vòng 5', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html'  },
+            { id: 6, name: 'Vòng 6', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html'  },
+            { id: 7, name: 'Vòng 7', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 8, name: 'Vòng 8', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 9, name: 'Vòng 9', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 10, name: 'Vòng 10', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 11, name: 'Vòng 11', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 12, name: 'Vòng 12', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 13, name: 'Vòng 13', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+             { id: 14, name: 'Vòng 14', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 15, name: 'Vòng 15', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 16, name: 'Vòng 16', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 17, name: 'Vòng 17', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 18, name: 'Vòng 18', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 19, name: 'Vòng 19', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 20, name: 'Vòng 20', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+        ];
+        const tonghopRounds = [
+        { id: 1, name: 'Vòng 1', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+             { id: 2, name: 'Vòng 2', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 3, name: 'Vòng 3', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 4, name: 'Vòng 4', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html'  },
+            { id: 5, name: 'Vòng 5', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html'  },
+            { id: 6, name: 'Vòng 6', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html'  },
+            { id: 7, name: 'Vòng 7', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 8, name: 'Vòng 8', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 9, name: 'Vòng 9', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 10, name: 'Vòng 10', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 11, name: 'Vòng 11', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 12, name: 'Vòng 12', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 13, name: 'Vòng 13', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+             { id: 14, name: 'Vòng 14', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 15, name: 'Vòng 15', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 16, name: 'Vòng 16', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 17, name: 'Vòng 17', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 18, name: 'Vòng 18', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 19, name: 'Vòng 19', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+            { id: 20, name: 'Vòng 20', startDate: '2025-09-05', endDate: '2026-05-31', link: '404.html' },
+        ];
+        const dautruongRounds = [
+            { id: 1, name: 'Ôn luyện vòng 1', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+             { id: 2, name: 'Ôn luyện vòng 2', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+            { id: 3, name: 'Ôn luyện vòng 3', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+            { id: 4, name: 'Ôn luyện vòng 4', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+            { id: 5, name: 'Ôn luyện vòng 5', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+            { id: 6, name: 'Ôn luyện vòng 6', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+            { id: 7, name: 'Ôn luyện vòng 7', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+            { id: 8, name: 'Ôn luyện vòng 8', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+            { id: 9, name: 'Ôn luyện vòng 9', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+            { id: 10, name: 'Ôn luyện vòng Sơ Khảo - 1', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+            { id: 11, name: 'Ôn luyện vòng Sơ Khảo - 2', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+            { id: 12, name: 'Ôn luyện vòng Sơ Khảo - 3', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+            { id: 13, name: 'Ôn luyện vòng Sơ Khảo - 4', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+             { id: 14, name: 'Ôn luyện vòng Bán Kết - 1', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+            { id: 15, name: 'Ôn luyện vòng Bán Kết - 2', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+            { id: 16, name: 'Ôn luyện vòng Bán Kết - 3', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+            { id: 17, name: 'Ôn luyện vòng Chung Kết - 1', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+            { id: 18, name: 'Ôn luyện vòng Chung Kết - 2', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+            { id: 19, name: 'Ôn luyện vòng Chung Kết - 3', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+            { id: 20, name: 'Ôn luyện vòng Chung Kết - 4', startDate: '2024-01-01', endDate: '2024-12-31', link: '404.html' },
+        ];
+
+        let isActivated = false; // Initial state
+
+        function formatDate(dateString) {
+             const [year, month, day] = dateString.split('-');
+             return `${day}/${month}/${year}`;
+        }
+
+        function renderRoundsTable(rounds, tableBody) {
+            tableBody.innerHTML = '';
+            if (!rounds || rounds.length === 0) {
+                tableBody.closest('.table-container').innerHTML = '<p class="text-center text-danger mt-4">Không có dữ liệu vòng thi. Vui lòng kiểm tra lại.</p>';
+                return;
+            }
+
+            for (let i = 0; i < rounds.length; i++) {
+                const round = rounds[i];
+                const row = document.createElement('tr');
+                let actionButton = '';
+
+                 // Add "locked-cell" class if not activated
+                const lockedClass = isActivated ? '' : 'locked-cell';
+
+                 if (isActivated) {
+                    actionButton = `<a href="${round.link}" class="btn btn-round"><i class="fas fa-play-circle"></i> Vào thi</a>`;
+                } else {
+                    actionButton = `<span class="not-eligible">Chưa kích hoạt</span>`;
+                }
+
+                row.innerHTML = `
+                    <td>${i + 1}</td>
+                    <td>${round.name || 'N/A'}</td>
+                    <td>${formatDate(round.startDate)}</td>
+                    <td>${formatDate(round.endDate)}</td>
+                    <td class="${lockedClass}">${actionButton}</td>
+                `;
+                tableBody.appendChild(row);
+            }
+        }
+
+        function renderAllTables(){
+            renderRoundsTable(toanRounds, toanRoundsTableBody);
+            renderRoundsTable(vanRounds, vanRoundsTableBody);
+            renderRoundsTable(anhRounds, anhRoundsTableBody);
+            renderRoundsTable(tonghopRounds, tonghopRoundsTableBody);
+            renderRoundsTable(dautruongRounds, dautruongRoundsTableBody);
+        }
+
+        // Call this function initially to render the tables
+        renderAllTables();
+
+         // --- Activation Logic ---
+        activateButton.addEventListener('click', () => {
+            const code = activationCodeInput.value.trim().toUpperCase();
+
+            if (code === 'THITHU123' || code === 'OLL10') {
+                isActivated = true;
+                localStorage.setItem('isActivated', 'true'); // Persist activation
+                alert('Kích hoạt thành công!');
+                renderAllTables(); // Re-render all tables after activation
+            } else {
+                alert('Mã kích hoạt không hợp lệ.');
+            }
+        });
+
+        // Check for persistent activation
+        const storedActivation = localStorage.getItem('isActivated');
+        if (storedActivation === 'true') {
+            isActivated = true;
+        }
+
+         // Initial table rendering
+        renderAllTables();
+
+        // --- Notification Logic ---
+        function showNotificationPopup() {
+            // Only show if no other major popup is active
+            if (!infoPopup.classList.contains('active') && !changePasswordPopup.classList.contains('active')) {
+                notificationPopup.classList.add('active');
+            }
+        }
+
+        function hideNotificationPopup() {
+            notificationPopup.classList.remove('active');
+        }
+        notificationPopup.querySelector('.btn-close').addEventListener('click', hideNotificationPopup);
+
+        function handleNotification() {
+            const NOTIFICATION_KEY = `notification_user_${user.username}`; // User-specific key
+            let notificationData = JSON.parse(localStorage.getItem(NOTIFICATION_KEY) || '{}');
+            let count = notificationData.count || 0;
+            let lastDismissTime = notificationData.lastDismiss || 0;
+            let showAfterTime = notificationData.showAfter || 0;
+            const now = Date.now();
+            const oneDay = 24 * 60 * 60 * 1000;
+            const minInterval = 2 * 60 * 60 * 1000; // 2 hours minimum
+            const maxIntervalAddition = 4 * 60 * 60 * 1000; // up to 4 more hours random
+            const resetTime = 3 * 60 * 60 * 1000; // Don't show again within 3 hours of last dismissal if count > 5
+
+            // Reset daily if login is older than a day (already handled by login check, but good failsafe)
+            const currentLoginTime = parseInt(localStorage.getItem('loginTime') || '0');
+            if (now - currentLoginTime > oneDay) {
+                 count = 0;
+                 lastDismissTime = 0;
+                 showAfterTime = 0;
+                 // console.log("Notification count reset due to >24h since login.");
+            }
+
+            // Logic to show
+            if (count < 5) {
+                if (now >= showAfterTime) {
+                    // console.log(`Showing notification (count ${count + 1})`);
+                    showNotificationPopup();
+                    count++;
+                    lastDismissTime = now;
+                     // Schedule next potential show time (randomly between 2-6 hours later)
+                    showAfterTime = now + minInterval + Math.random() * maxIntervalAddition;
+
+                    // Save updated data
+                    localStorage.setItem(NOTIFICATION_KEY, JSON.stringify({
+                        count: count,
+                        lastDismiss: lastDismissTime,
+                        showAfter: showAfterTime
+                    }));
+                } else {
+                     // console.log(`Notification scheduled for later (after ${new Date(showAfterTime).toLocaleTimeString()})`);
+                }
+            } else {
+                // Already shown 5 times
+                if (now - lastDismissTime >= resetTime) {
+                    // It's been more than 3 hours since the 5th dismissal, reset the cycle
+                     // console.log("Notification cycle reset after 5 views and cooldown.");
+                    count = 0;
+                    lastDismissTime = 0;
+                    showAfterTime = 0; // Reset showAfter as well
+                    localStorage.setItem(NOTIFICATION_KEY, JSON.stringify({ count, lastDismiss: lastDismissTime, showAfter: showAfterTime }));
+                    // Optionally, show it again immediately after reset or wait for the next schedule
+                    // setTimeout(handleNotification, 2000); // Try again shortly after reset
+                } else {
+                     // console.log("Notification limit reached, waiting for cooldown.");
+                }
+            }
+        }
+        // Initial call with a delay
+        setTimeout(handleNotification, 3000); // Wait 3 seconds after page load
+
+
+        // --- Security Enhancements (Keep these) ---
+        // Disable text selection
+        document.addEventListener('selectstart', function(e) {
+             // Allow selection within input fields and textareas
+            const targetTagName = e.target.tagName.toLowerCase();
+            if (targetTagName === 'input' || targetTagName === 'textarea') {
+                return;
+            }
+            e.preventDefault();
+        });
+
+        // Disable right-click (context menu)
+        document.addEventListener('contextmenu', function(e) {
+            // Allow context menu on input fields and textareas
+            const targetTagName = e.target.tagName.toLowerCase();
+            if (targetTagName === 'input' || targetTagName === 'textarea') {
+                return;
+            }
+            e.preventDefault();
+        });
+
+        // Disable common copy/paste/cut/select-all shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Allow shortcuts within input fields and textareas
+            const targetTagName = e.target.tagName.toLowerCase();
+            if (targetTagName === 'input' || targetTagName === 'textarea') {
+                // Allow Ctrl+A inside inputs/textareas
+                if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+                     return;
+                }
+                // Allow Ctrl+C, Ctrl+V, Ctrl+X inside inputs/textareas
+                if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'v' || e.key === 'x')) {
+                     return;
+                }
+            }
+             // Block specific combinations globally otherwise
+            if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'v' || e.key === 'x' || e.key === 'a' || e.key === 'u' || e.key === 's')) {
+                 console.warn(`Blocked shortcut: ${e.key}`);
+                 e.preventDefault();
+             }
+             // Block F12 (developer tools)
+             if (e.key === 'F12') {
+                 console.warn("Blocked F12");
+                 e.preventDefault();
+             }
+        });
+
+</script>
+</body>
+</html>

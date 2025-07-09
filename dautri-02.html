@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Hứng Chữ Kỳ Diệu</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(to bottom, #e0f7fa, #fff);
+    }
+    #gameArea {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+    .letter {
+      position: absolute;
+      font-size: 40px;
+      font-weight: bold;
+      color: #00796b;
+    }
+    #basket {
+      position: absolute;
+      bottom: 20px;
+      width: 150px;
+      height: 90px;
+      background: url('https://cdn-icons-png.flaticon.com/512/3530/3530461.png') no-repeat center/contain;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    #scoreBoard {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 24px;
+      background: white;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px gray;
+    }
+  </style>
+</head>
+<body>
+  <div id="gameArea">
+    <div id="basket"></div>
+    <div id="scoreBoard">Điểm: <span id="score">0</span></div>
+  </div>
+
+  <script>
+    const basket = document.getElementById("basket");
+    const gameArea = document.getElementById("gameArea");
+    const scoreEl = document.getElementById("score");
+    let basketX = window.innerWidth / 2 - 75;
+    let score = 0;
+    let collectedWord = "";
+    const validWords = ["Phở", "Ăn", "Cá", "Mì", "Bún", "Bò"];
+
+    function moveBasket(e) {
+      if (e.key === "ArrowLeft") basketX -= 30;
+      if (e.key === "ArrowRight") basketX += 30;
+      basketX = Math.max(0, Math.min(window.innerWidth - 150, basketX));
+      basket.style.left = basketX + "px";
+    }
+
+    document.addEventListener("keydown", moveBasket);
+
+    function spawnLetter() {
+      const chars = ["P", "h", "ở", "Ă", "n", "C", "á", "M", "ì", "B", "ú", "n", "ò", "x", "z", "Q", "r"];
+      const letter = document.createElement("div");
+      letter.classList.add("letter");
+      letter.textContent = chars[Math.floor(Math.random() * chars.length)];
+      letter.style.left = Math.random() * (window.innerWidth - 40) + "px";
+      gameArea.appendChild(letter);
+
+      let posY = 0;
+      const fall = setInterval(() => {
+        posY += 1.2; // rơi chậm
+        letter.style.top = posY + "px";
+
+        const letterX = letter.offsetLeft;
+        const letterY = letter.offsetTop;
+        const basketRect = basket.getBoundingClientRect();
+
+        if (
+          letterY + 40 >= basketRect.top &&
+          letterX + 30 >= basketRect.left &&
+          letterX <= basketRect.right
+        ) {
+          clearInterval(fall);
+          gameArea.removeChild(letter);
+          collectedWord += letter.textContent;
+
+          const isValid = validWords.includes(collectedWord);
+
+          if (isValid) {
+            score++;
+            scoreEl.textContent = score;
+            alert("🎉 Bạn ghép đúng từ: " + collectedWord);
+            collectedWord = "";
+          } else if (collectedWord.length >= 3) {
+            score--;
+            scoreEl.textContent = score;
+            alert("❌ Từ không đúng: " + collectedWord);
+            collectedWord = "";
+          }
+        } else if (posY > window.innerHeight) {
+          clearInterval(fall);
+          gameArea.removeChild(letter);
+        }
+      }, 20);
+    }
+
+    setInterval(spawnLetter, 1200);
+  </script>
+</body>
+</html>

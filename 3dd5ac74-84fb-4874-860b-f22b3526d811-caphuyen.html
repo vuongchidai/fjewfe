@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Thi Trắc Nghiệm Lịch Sử THCS Vòng 2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f4f8;
+            color: #37474f;
+            transition: background-color 0.3s ease;
+             position: relative;
+        }
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 900px;
+            animation: fadeIn 0.5s ease-out;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+         @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+         h1 {
+            text-align: center;
+            color: #2196f3;
+            margin-bottom: 25px;
+            font-size: 2.8em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+            font-weight: 500;
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+         #timer {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #e57373;
+            background-color: #ffebee;
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: inline-block;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+             margin: 0;
+         }
+          #quiz-container{
+              display: none;
+         }
+          .quiz-rules {
+            margin-bottom: 20px;
+            padding: 25px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            background-color: #fafafa;
+            box-shadow: 0 3px 7px rgba(0,0,0,0.08);
+         }
+         .quiz-rules h2 {
+           font-size: 1.8em;
+            color: #263238;
+          text-align: center;
+          margin-bottom: 20px;
+       }
+        .quiz-rules ol {
+            list-style-type: decimal;
+           padding-left: 25px;
+        }
+       .quiz-rules li {
+           margin-bottom: 10px;
+            font-size: 1.2em;
+            color: #455a64;
+       }
+         .question {
+            margin-bottom: 30px;
+            padding: 25px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            background-color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 7px rgba(0,0,0,0.08);
+            display: none;
+            border-bottom: 2px solid #e0e0e0;
+         }
+        .question.active {
+           display: block;
+        }
+        .question:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+         .question p {
+            margin-bottom: 15px;
+            font-weight: 500;
+            color: #263238;
+            font-size: 1.2em;
+        }
+         .question .question-number {
+              font-size: 1.2em;
+              color: #78909c;
+              margin-bottom: 5px;
+              display: block;
+           }
+          .question .answer-image {
+             display: block;
+             max-width: 60%;
+              height: auto;
+              margin: 10px auto;
+          }
+        label {
+            display: block;
+            margin-bottom: 10px;
+             font-size: 1.2em;
+            color: #455a64;
+            cursor: pointer;
+
+        }
+        input[type="radio"], input[type="checkbox"] {
+             margin-right: 10px;
+             transform: scale(1.2);
+        }
+          input[type="checkbox"]:checked + span {
+            color: #2196f3;
+            font-weight: 500;
+         }
+           input[type="radio"]:checked + span {
+             color: #2196f3;
+             font-weight: 500;
+         }
+          .answer-label {
+               display: inline-block;
+               min-width: 30px;
+            }
+          .navigation-buttons {
+              text-align: center;
+              margin-top: 20px;
+           }
+         .navigation-buttons button {
+           padding: 12px 20px;
+            background-color: #2196f3;
+             color: white;
+           border: none;
+            border-radius: 8px;
+            cursor: pointer;
+              margin: 0 10px;
+             font-size: 1.1em;
+             transition: background-color 0.3s ease, transform 0.2s ease;
+             box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+            font-weight: 500;
+       }
+          .navigation-buttons button:hover{
+                background-color: #1976d2;
+                 transform: scale(1.05);
+           }
+          button[type="submit"] {
+           padding: 12px 20px;
+            background-color: #4caf50;
+             color: white;
+             border: none;
+           border-radius: 8px;
+            cursor: pointer;
+             font-size: 1.1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+             font-weight: 500;
+             margin: 0;
+        }
+       button[type="submit"]:hover {
+            background-color: #43a047;
+           transform: scale(1.05);
+        }
+         #result {
+            text-align: center;
+            margin-top: 30px;
+            display: none;
+            animation: fadeInResult 0.5s ease-out;
+        }
+         @keyframes fadeInResult {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+         #result h2 {
+            color: #2196f3;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        #result p {
+            font-size: 1.6em;
+            font-weight: bold;
+            color: #263238;
+        }
+         #error-message {
+            margin-top: 20px;
+            display: none;
+             color: #f44336;
+            text-align: center;
+             padding: 10px;
+            background-color: #ffebee;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+             position: absolute;
+             top: 20px;
+             right: 20px;
+             animation: toast 0.4s ease-in-out;
+       }
+       @keyframes toast{
+         0%{
+           opacity: 0;
+           transform: translateX(20px);
+        }
+         100%{
+            opacity: 1;
+           transform: translateX(0);
+         }
+        }
+         #back-button {
+            padding: 12px 20px;
+             background-color: #2196f3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+             display: block;
+             margin: 20px auto;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+            text-decoration: none;
+            text-align: center;
+            display: none;
+            font-weight: 500;
+        }
+          #back-button:hover{
+             background-color: #1976d2;
+            transform: scale(1.05);
+        }
+          #start-button {
+           padding: 12px 20px;
+            background-color: #4caf50;
+            color: white;
+             border: none;
+            border-radius: 8px;
+            cursor: pointer;
+             margin: 20px auto;
+             font-size: 1.1em;
+             transition: background-color 0.3s ease, transform 0.2s ease;
+             box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+            font-weight: 500;
+              display: block;
+        }
+          #start-button:hover{
+             background-color: #43a047;
+             transform: scale(1.05);
+           }
+        /* Thêm CSS cho phần điền từ */
+         .fill-in-blank-inline {
+            display: inline-block;
+        }
+
+        .fill-in-blank-inline .blank-input {
+               margin: 0 5px;
+               padding: 5px;
+              border: 1px solid #e0e0e0;
+              border-radius: 4px;
+              width: 80px;
+              display: inline-block;
+               font-size: 1.2em;
+        }
+         .popup {
+             position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            z-index: 1000;
+            display: none;
+             animation: fadeInPopup 0.3s ease-in-out;
+             max-width: 400px;
+        }
+        @keyframes fadeInPopup{
+            from{
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to{
+                opacity: 1;
+               transform: translate(-50%, -50%);
+            }
+        }
+        .popup h2 {
+             color: #e53935;
+             margin-bottom: 15px;
+         }
+         .popup .icon-danger {
+            font-size: 4em;
+            color: #e53935;
+            margin-bottom: 10px;
+        }
+          .popup button{
+               padding: 10px 15px;
+            background-color: #2196f3;
+             color: white;
+           border: none;
+            border-radius: 8px;
+            cursor: pointer;
+             font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+            font-weight: 500;
+          }
+          .popup button:hover{
+               background-color: #1976d2;
+                 transform: scale(1.05);
+           }
+         #lock-message {
+            text-align: center;
+            margin-top: 30px;
+            display: none;
+            animation: fadeInResult 0.5s ease-out;
+            font-size: 1.3em;
+         }
+          #enter-code-container {
+           text-align: center;
+           margin-top: 20px;
+           display: block;
+         }
+          #enter-code-container input{
+           margin-bottom: 10px;
+           padding: 10px;
+            border: 1px solid #e0e0e0;
+             border-radius: 4px;
+            font-size: 1.1em;
+          }
+          #enter-code-container button {
+             padding: 12px 20px;
+             background-color: #2196f3;
+             color: white;
+              border: none;
+             border-radius: 8px;
+              cursor: pointer;
+             font-size: 1.1em;
+             transition: background-color 0.3s ease, transform 0.2s ease;
+             box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+             font-weight: 500;
+         }
+         #enter-code-container button:hover{
+                background-color: #1976d2;
+                 transform: scale(1.05);
+          }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Bài thi vòng: Cấp Huyện</h1>
+    <div class="quiz-rules">
+        <h2>QUY CHẾ DỰ THI</h2>
+         <ol>
+            <li>Hội đồng: Đơn vị tổ chức thành lập thi cử giám sát chéo nhau đảm bảo nghiêm túc, công bằng, nghiêm minh</li>
+            <li>Thí sinh không được phép sử dụng tài liệu, sách vở, hoặc bất kỳ nguồn tham khảo nào trong suốt quá trình thi nếu không được phép của ban tổ chức. Không mang thiết bị điện tử và các thiết bị thông minh có kết nối wifi và phòng thi;</li>
+            <li>Thí sinh không được phép sử dụng bất kỳ phần mềm, công cụ hay phương thức nào để gian lận trong cuộc thi, như hack, giải mã câu hỏi, hoặc can thiệp vào hệ thống thi;</li>
+            <li>Thí sinh phải tuân thủ yêu cầu giám sát (ví dụ: bật camera, sử dụng phần mềm giám sát, không thoát màn hình);</li>
+            <li>Không được phép quay phim hoặc chụp ảnh trong quá trình thi, cũng như chia sẻ hình ảnh bài thi với người khác;</li>
+            <li>Không được phép tiết lộ thông tin liên quan đến cuộc thi, câu hỏi thi, mã ca thi hoặc kết quả thi trước khi ban tổ chức công bố chính thức;</li>
+            <li>Chỉ mang bút chì, bút bi và các thiết bị không vi phạm quy chế dự thi mà ban tổ chức, giám thị quy định (Riêng giấy nháp do Hội đồng thi sẽ phải cấp cho học sinh);</li>
+             <li>Thí sinh làm bài và tuân thủ theo gian quy định của Ban Tổ Chức</li>
+            <li>Hội đồng thi vi phạm quy chế Ban Tổ Chức có quyền hủy kết quả thi của thí sinh.</li>
+            <li>Thí sinh lưu ý: Viết hoa tên riêng, và các địa điểm (nếu có)</li>
+        </ol>
+        <label style="margin-bottom: 10px; display: inline-flex; align-items: center;">
+            <input type="checkbox" id="rules-checkbox" style="margin-right: 5px;" checked>
+            <span>Tôi đồng ý với quy chế dự thi</span>
+        </label>
+       <div id="enter-code-container">
+             <input type="text" id="enter-code" placeholder="Nhập mã dự thi">
+            <button type="button" id="confirm-code-button">Xác nhận mã</button>
+       </div>
+        <button type="button" id="start-button" style="display: none;">Bắt đầu làm bài</button>
+    </div>
+    <div id="quiz-container">
+        <div class="header-container">
+            <div id="timer">30:00</div>
+            <form id="quiz-form" style="display: inline-block;">
+                <button type="submit">Nộp bài</button>
+            </form>
+        </div>
+        <!-- Câu hỏi trắc nghiệm -->
+          <div class="question active" data-question-id="1">
+             <span class="question-number">Câu 1 - Lịch sử Việt Nam</span>
+             <p>Bộ luật "Hồng Đức" không chỉ là một tập hợp các quy tắc pháp lý mà còn là một bản tuyên ngôn về tư tưởng chính trị và xã hội. Trong bối cảnh nào thì bộ luật này được ban hành và nó phản ánh những giá trị nào của thời đại?</p>
+             <label><input type="radio" name="q1" value="a"><span class="answer-label">A.</span> Thời kỳ nhà Trần, thể hiện tinh thần Phật giáo và chủ trương hòa bình</label><br>
+              <label><input type="radio" name="q1" value="b"><span class="answer-label">B.</span> Thời kỳ nhà Hồ, phản ánh sự đổi mới pháp luật và sự tập trung quyền lực</label><br>
+             <label><input type="radio" name="q1" value="c"><span class="answer-label">C.</span> Thời kỳ nhà Lê sơ, thể hiện sự hoàn thiện của thể chế quân chủ và tư tưởng Nho giáo</label><br>
+             <label><input type="radio" name="q1" value="d"><span class="answer-label">D.</span> Thời kỳ nhà Nguyễn, phản ánh sự bảo thủ của chế độ phong kiến và sự phân biệt giai cấp</label><br>
+          </div>
+          <div class="question" data-question-id="2">
+             <span class="question-number">Câu 2 - Lịch sử Việt Nam</span>
+             <p>Khởi nghĩa Tây Sơn là một sự kiện lịch sử quan trọng không chỉ vì những chiến công quân sự mà còn vì những ảnh hưởng sâu rộng về mặt xã hội. Hãy chọn đáp án thể hiện đúng nhất tầm quan trọng và những hệ quả của phong trào này:</p>
+             <label><input type="radio" name="q2" value="a"><span class="answer-label">A.</span> Chỉ là một cuộc nổi dậy của nông dân, không có tác động lâu dài đến lịch sử</label><br>
+             <label><input type="radio" name="q2" value="b"><span class="answer-label">B.</span> Chỉ tập trung vào việc lật đổ chính quyền phong kiến, không chú trọng đến cải cách xã hội</label><br>
+             <label><input type="radio" name="q2" value="c"><span class="answer-label">C.</span> Đã lật đổ các tập đoàn phong kiến mục nát, mở đầu cho quá trình thống nhất đất nước và có những chính sách cải cách tiến bộ</label><br>
+            <label><input type="radio" name="q2" value="d"><span class="answer-label">D.</span> Chỉ là một phong trào nông dân thất bại, không mang lại sự thay đổi đáng kể trong lịch sử</label><br>
+          </div>
+           <div class="question" data-question-id="3">
+              <span class="question-number">Câu 3 - Lịch sử Việt Nam</span>
+              <p>Chiến dịch Điện Biên Phủ năm 1954 không chỉ là một trận đánh lớn mà còn là một sự kiện mang tính bước ngoặt trong lịch sử. Hãy chỉ ra ý nghĩa lịch sử quan trọng nhất của chiến dịch này:</p>
+              <label><input type="radio" name="q3" value="a"><span class="answer-label">A.</span> Thể hiện sự thất bại của chiến lược quân sự của Pháp ở Việt Nam, nhưng không tác động đến cục diện chung</label><br>
+             <label><input type="radio" name="q3" value="b"><span class="answer-label">B.</span> Đánh bại hoàn toàn quân đội Pháp, kết thúc hoàn toàn chiến tranh xâm lược của Pháp ở Việt Nam</label><br>
+             <label><input type="radio" name="q3" value="c"><span class="answer-label">C.</span> Tạo bước ngoặt quyết định, dẫn đến việc ký kết Hiệp định Giơnevơ và chấm dứt sự thống trị của Pháp ở Đông Dương</label><br>
+             <label><input type="radio" name="q3" value="d"><span class="answer-label">D.</span> Mở đầu cho một giai đoạn chiến tranh mới, phức tạp hơn và kéo dài hơn ở Việt Nam</label><br>
+         </div>
+          <div class="question" data-question-id="4">
+            <span class="question-number">Câu 4 - Lịch sử Việt Nam</span>
+           <p>Việc Lý Công Uẩn quyết định dời đô từ Hoa Lư về Thăng Long năm 1010 không chỉ là một hành động địa lý mà còn là một quyết định mang tính chiến lược và có tầm nhìn sâu rộng. Hãy phân tích ý nghĩa của quyết định này:</p>
+             <label><input type="radio" name="q4" value="a"><span class="answer-label">A.</span> Chỉ là một sự thay đổi địa điểm thông thường, không có ảnh hưởng gì đến sự phát triển của đất nước</label><br>
+            <label><input type="radio" name="q4" value="b"><span class="answer-label">B.</span> Do Hoa Lư không còn phù hợp về mặt địa lý và phong thủy, nên cần phải dời đô sang một vị trí mới</label><br>
+            <label><input type="radio" name="q4" value="c"><span class="answer-label">C.</span> Mang tính chiến lược, khẳng định vị thế trung tâm của Thăng Long và mở ra một thời kỳ phát triển mới của đất nước</label><br>
+            <label><input type="radio" name="q4" value="d"><span class="answer-label">D.</span> Quyết định mang tính bảo thủ, không thể hiện tầm nhìn xa của người lãnh đạo</label><br>
+      </div>
+      <div class="question" data-question-id="5">
+          <span class="question-number">Câu 5 - Lịch sử Thế Giới</span>
+          <p>Sự kiện phát kiến ra châu Mỹ của Christopher Columbus đã thay đổi hoàn toàn bản đồ thế giới và mở ra một kỷ nguyên mới. Hãy chọn nhận định đúng nhất về tác động của sự kiện này:</p>
+           <label><input type="radio" name="q5" value="a"><span class="answer-label">A.</span> Chỉ là một sự kiện mang tính địa lý, không có ảnh hưởng đáng kể đến lịch sử thế giới</label><br>
+           <label><input type="radio" name="q5" value="b"><span class="answer-label">B.</span> Mang đến sự phát triển về kinh tế và khoa học cho châu Âu, nhưng không có tác động đến các khu vực khác</label><br>
+           <label><input type="radio" name="q5" value="c"><span class="answer-label">C.</span> Mở đầu cho quá trình xâm lược và thuộc địa hóa của phương Tây, gây ra nhiều hệ lụy tiêu cực cho các nền văn minh bản địa</label><br>
+           <label><input type="radio" name="q5" value="d"><span class="answer-label">D.</span> Mang lại sự bình đẳng và công bằng cho tất cả các dân tộc trên thế giới</label><br>
+     </div>
+     <div class="question" data-question-id="6">
+          <span class="question-number">Câu 6 - Lịch sử Thế Giới</span>
+         <p>Cách mạng tháng Mười Nga năm 1917 là một sự kiện lịch sử vĩ đại, đánh dấu sự ra đời của nhà nước xã hội chủ nghĩa đầu tiên trên thế giới. Hãy chọn nhận định phản ánh đúng nhất về tầm quan trọng của cuộc cách mạng này:</p>
+          <label><input type="radio" name="q6" value="a"><span class="answer-label">A.</span> Chỉ là một cuộc bạo loạn của quần chúng, không có tác động lớn đến lịch sử thế giới</label><br>
+            <label><input type="radio" name="q6" value="b"><span class="answer-label">B.</span> Mở đầu cho một kỷ nguyên mới trong lịch sử, tạo ra một mô hình xã hội mới đối lập với chủ nghĩa tư bản</label><br>
+            <label><input type="radio" name="q6" value="c"><span class="answer-label">C.</span> Chỉ có ý nghĩa đối với nước Nga, không có tác động đến các nước khác</label><br>
+            <label><input type="radio" name="q6" value="d"><span class="answer-label">D.</span> Chỉ là một cuộc đảo chính quân sự, không mang lại sự thay đổi đáng kể</label><br>
+    </div>
+    <div class="question" data-question-id="7">
+           <span class="question-number">Câu 7 - Lịch sử Thế Giới</span>
+          <p>Kim tự tháp Giza là một trong những kỳ quan thế giới cổ đại, biểu tượng cho sự phát triển của nền văn minh Ai Cập. Hãy phân tích tầm quan trọng của công trình này:</p>
+           <label><input type="radio" name="q7" value="a"><span class="answer-label">A.</span> Chỉ là một lăng mộ của các pharaon, không có giá trị lịch sử và văn hóa</label><br>
+            <label><input type="radio" name="q7" value="b"><span class="answer-label">B.</span> Biểu tượng của sự phát triển về khoa học và công nghệ của Ai Cập cổ đại, nhưng không có ảnh hưởng đến các nền văn minh khác</label><br>
+           <label><input type="radio" name="q7" value="c"><span class="answer-label">C.</span> Là một công trình kiến trúc vĩ đại, thể hiện sự phát triển của toán học, kiến trúc và nghệ thuật của người Ai Cập cổ đại, đồng thời là một di sản văn hóa của nhân loại</label><br>
+            <label><input type="radio" name="q7" value="d"><span class="answer-label">D.</span> Là một công trình mang tính tôn giáo, không có ý nghĩa gì trong việc nghiên cứu lịch sử</label><br>
+    </div>
+       <div class="question" data-question-id="8">
+           <span class="question-number">Câu 8 - Lịch sử Thế Giới</span>
+             <p>Aristotle là một trong những nhà triết học vĩ đại nhất của Hy Lạp cổ đại, có ảnh hưởng sâu rộng đến tư tưởng và khoa học phương Tây. Hãy chọn đáp án thể hiện đúng nhất về đóng góp của ông:</p>
+             <label><input type="radio" name="q8" value="a"><span class="answer-label">A.</span> Chỉ là một nhà triết học trừu tượng, không có đóng góp thực tiễn vào khoa học</label><br>
+             <label><input type="radio" name="q8" value="b"><span class="answer-label">B.</span> Đặt nền móng cho nhiều ngành khoa học, từ sinh học đến chính trị, và có những đóng góp quan trọng vào logic học</label><br>
+            <label><input type="radio" name="q8" value="c"><span class="answer-label">C.</span> Chỉ là một người thầy của Alexander Đại đế, không có thành tựu gì đáng kể</label><br>
+             <label><input type="radio" name="q8" value="d"><span class="answer-label">D.</span> Tư tưởng của ông không còn phù hợp trong thời đại ngày nay</label><br>
+       </div>
+        <div class="question" data-question-id="9">
+            <span class="question-number">Câu 9 - Lịch sử Việt Nam</span>
+           <p>Chiến thắng của quân Tây Sơn năm 1789 trong cuộc kháng chiến chống quân Thanh xâm lược có ý nghĩa lịch sử như thế nào?:</p>
+           <label><input type="radio" name="q9" value="a"><span class="answer-label">A.</span> Chỉ là một trận đánh nhỏ, không có tác động gì đến lịch sử dân tộc</label><br>
+           <label><input type="radio" name="q9" value="b"><span class="answer-label">B.</span> Là một chiến thắng quân sự quyết định, bảo vệ nền độc lập của dân tộc, thể hiện tinh thần yêu nước và ý chí quật cường của nhân dân</label><br>
+            <label><input type="radio" name="q9" value="c"><span class="answer-label">C.</span> Mở đường cho nhà Nguyễn xâm lược, gây ra nhiều đau khổ cho nhân dân</label><br>
+           <label><input type="radio" name="q9" value="d"><span class="answer-label">D.</span> Chỉ là một cuộc chiến tranh giành quyền lực, không có ý nghĩa gì trong lịch sử</label><br>
+       </div>
+        <div class="question" data-question-id="10">
+            <span class="question-number">Câu 10 - Lịch sử Việt Nam</span>
+            <p>Sự kiện Cách mạng tháng Tám năm 1945 là một bước ngoặt lịch sử, đưa Việt Nam vào một kỷ nguyên mới. Hãy phân tích ý nghĩa của sự kiện này:</p>
+            <label><input type="radio" name="q10" value="a"><span class="answer-label">A.</span> Chỉ là một cuộc nổi dậy của quần chúng, không có tác động lớn đến lịch sử dân tộc</label><br>
+            <label><input type="radio" name="q10" value="b"><span class="answer-label">B.</span> Lật đổ chế độ thực dân phong kiến, giành lại độc lập dân tộc và mở ra một kỷ nguyên mới cho đất nước</label><br>
+           <label><input type="radio" name="q10" value="c"><span class="answer-label">C.</span> Không có ý nghĩa gì, chỉ là một sự kiện mang tính thời điểm</label><br>
+            <label><input type="radio" name="q10" value="d"><span class="answer-label">D.</span> Mở đầu cho một giai đoạn chiến tranh mới, phức tạp hơn và kéo dài hơn</label><br>
+       </div>
+        <div class="question" data-question-id="11">
+            <span class="question-number">Câu 11 - Lịch sử Thế Giới</span>
+            <p>Hội Quốc Liên được thành lập sau Chiến tranh thế giới thứ nhất với mục tiêu duy trì hòa bình và an ninh quốc tế. Tuy nhiên, tổ chức này đã không thể ngăn chặn được Chiến tranh thế giới thứ hai. Theo bạn, đâu là nguyên nhân chính dẫn đến sự thất bại của Hội Quốc Liên?</p>
+           <label><input type="radio" name="q11" value="a"><span class="answer-label">A.</span> Không có sự tham gia của các cường quốc lớn</label><br>
+           <label><input type="radio" name="q11" value="b"><span class="answer-label">B.</span> Thiếu cơ chế thực thi các quyết định và không có lực lượng quân sự riêng</label><br>
+            <label><input type="radio" name="q11" value="c"><span class="answer-label">C.</span> Mâu thuẫn nội bộ giữa các quốc gia thành viên</label><br>
+            <label><input type="radio" name="q11" value="d"><span class="answer-label">D.</span> Tất cả các đáp án trên</label><br>
+       </div>
+        <div class="question" data-question-id="12">
+            <span class="question-number">Câu 12 - Lịch sử Thế Giới</span>
+             <p>Phát minh ra bóng đèn điện của Thomas Edison có ý nghĩa như thế nào đối với nhân loại?</p>
+             <label><input type="radio" name="q12" value="a"><span class="answer-label">A.</span> Chỉ là một phát minh kỹ thuật thông thường, không có ảnh hưởng lớn đến xã hội</label><br>
+            <label><input type="radio" name="q12" value="b"><span class="answer-label">B.</span> Mở ra một kỷ nguyên mới về chiếu sáng, thúc đẩy sự phát triển của khoa học, công nghệ và kinh tế, thay đổi hoàn toàn cuộc sống của con người</label><br>
+            <label><input type="radio" name="q12" value="c"><span class="answer-label">C.</span> Mang lại sự thuận tiện cho cuộc sống, nhưng không có ý nghĩa gì trong việc phát triển khoa học</label><br>
+            <label><input type="radio" name="q12" value="d"><span class="answer-label">D.</span> Chỉ là một phát minh mang tính cá nhân, không có giá trị gì trong lịch sử</label><br>
+       </div>
+        <div class="question" data-question-id="13">
+            <span class="question-number">Câu 13 - Lịch sử Việt Nam</span>
+            <p>Các chiến dịch quân sự lớn trong cuộc kháng chiến chống Mỹ cứu nước không chỉ có ý nghĩa về mặt quân sự mà còn thể hiện sự phát triển về nghệ thuật chiến tranh của quân và dân ta. Hãy chọn các chiến dịch thể hiện rõ điều này:</p>
+           <label><input type="checkbox" name="q13" value="a"><span class="answer-label">A.</span> Chiến dịch Hồ Chí Minh (1975), thể hiện sự kết hợp giữa tiến công quân sự và nổi dậy của quần chúng</c</label><br>
+           <label><input type="checkbox" name="q13" value="b"><span class="answer-label">B.</span> Chiến dịch Điện Biên Phủ trên không (1972), thể hiện sự mưu trí và khả năng đánh bại các cuộc tập kích đường không</label><br>
+           <label><input type="checkbox" name="q13" value="c"><span class="answer-label">C.</span> Chiến dịch Tây Nguyên (1975), thể hiện sự thay đổi về chiến lược và khả năng tấn công mạnh mẽ của quân ta</label><br>
+           <label><input type="checkbox" name="q13" value="d"><span class="answer-label">D.</span> Chiến dịch Đường 9 - Nam Lào (1971), thể hiện sự phối hợp giữa quân đội và dân quân du kích</label><br>
+           </div>
+           <div class="question" data-question-id="14">
+           <span class="question-number">Câu 14 - Lịch sử Thế Giới</span>
+           <p>Phe Trục trong Chiến tranh thế giới thứ hai là một liên minh quân sự có mục tiêu xâm lược và bành trướng lãnh thổ. Hãy chỉ ra các quốc gia thuộc phe Trục:</p>
+           <label><input type="checkbox" name="q14" value="a"><span class="answer-label">A.</span> Đức, quốc gia khởi xướng chiến tranh, với tư tưởng phát xít</label><br>
+           <label><input type="checkbox" name="q14" value="b"><span class="answer-label">B.</span> Nhật Bản, với chủ nghĩa quân phiệt và ý đồ bành trướng ở châu Á</label><br>
+           <label><input type="checkbox" name="q14" value="c"><span class="answer-label">C.</span> Anh, một trong những cường quốc hàng đầu thế giới</label><br>
+           <label><input type="checkbox" name="q14" value="d"><span class="answer-label">D.</span> Ý, quốc gia theo chủ nghĩa phát xít và có mục tiêu xâm lược</label><br>
+           </div>
+           <div class="question" data-question-id="15">
+           <span class="question-number">Câu 15 - Lịch sử Thế Giới</span>
+           <p>
+           <span class="fill-in-blank-inline">
+           <br>Thành phố <input type="text" class="blank-input" data-blank-id="1" data-correct-answer="Athens" maxlength="20"> được coi là cái nôi của văn minh phương Tây, với nhiều thành tựu về triết học, nghệ thuật và chính trị.
+           </span>
+           </p>
+           </div>
+           <div class="question" data-question-id="16">
+           <span class="question-number">Câu 16 - Lịch sử Thế Giới</span>
+           <p>
+           <span class="fill-in-blank-inline">
+           <br><input type="text" class="blank-input" data-blank-id="2" data-correct-answer="Albert Einstein" maxlength="20"> là nhà khoa học đã đưa ra thuyết tương đối, làm thay đổi nhận thức của con người về không gian, thời gian và trọng lực.
+           </span>
+           </p>
+           </div>
+           <div class="question" data-question-id="17">
+           <span class="question-number">Câu 17 - Lịch sử Việt Nam</span>
+           <p>
+           <span class="fill-in-blank-inline">
+           <br>Trận <input type="text" class="blank-input" data-blank-id="3" data-correct-answer="Bạch Đằng" maxlength="20"> năm 1288 là một chiến thắng vĩ đại của quân dân ta, thể hiện tài thao lược của Trần Hưng Đạo trong việc sử dụng địa hình để đánh bại quân Mông - Nguyên.
+           </span>
+           </p>
+           </div>
+           <div class="question" data-question-id="18">
+           <span class="question-number">Câu 18 - Lịch sử Việt Nam</span>
+           <p>
+           <span class="fill-in-blank-inline">
+           <br>Phong trào Cần Vương nổ ra sau khi vua <input type="text" class="blank-input" data-blank-id="4" data-correct-answer="Hàm Nghi" maxlength="20"> bị bắt, thể hiện tinh thần yêu nước và ý chí bất khuất của nhân dân ta chống lại ách đô hộ của thực dân Pháp.
+           </span>
+           </p>
+           </div>
+           <div class="question" data-question-id="19">
+           <span class="question-number">Câu 19 - Lịch sử Thế Giới</span>
+           <p>
+           <span class="fill-in-blank-inline">
+           <br>Cuộc cách mạng công nghiệp <input type="text" class="blank-input" data-blank-id="5" data-correct-answer="lần thứ nhất" maxlength="20"> đã làm thay đổi căn bản phương thức sản xuất và đời sống xã hội, với sự ra đời của máy móc và công nghiệp hóa.
+           </span>
+           </p>
+           </div>
+           <div class="question" data-question-id="20">
+           <span class="question-number">Câu 20 - Lịch sử Thế Giới</span>
+           <p>
+           <span class="fill-in-blank-inline">
+           <br>Hiệp ước <input type="text" class="blank-input" data-blank-id="6" data-correct-answer="Versailles" maxlength="20"> năm 1919 đã kết thúc Chiến tranh thế giới thứ nhất, nhưng cũng gây ra những mâu thuẫn và bất ổn mới, dẫn đến Chiến tranh thế giới thứ hai.
+           </span>
+           </p>
+           </div>
+           <div class="question" data-question-id="21">
+           <span class="question-number">Câu 21 - Lịch sử Việt Nam</span>
+           <p>
+           <span class="fill-in-blank-inline">
+           <br><input type="text" class="blank-input" data-blank-id="7" data-correct-answer="Nguyễn Trãi" maxlength="20"> là tác giả của bài "Bình Ngô Đại Cáo", một bản tuyên ngôn độc lập bất hủ, thể hiện ý chí và quyết tâm của dân tộc ta trong cuộc kháng chiến chống quân Minh.
+           </span>
+           </p>
+           </div>
+           <div class="question" data-question-id="22">
+           <span class="question-number">Câu 22 - Lịch sử Việt Nam</span>
+           <p>
+           <span class="fill-in-blank-inline">
+           <br>Cuộc kháng chiến chống quân Mông - Nguyên lần thứ 3 diễn ra vào năm <input type="text" class="blank-input" data-blank-id="8" data-correct-answer="1287" maxlength="20">, thể hiện sức mạnh đoàn kết và tinh thần chiến đấu quả cảm của quân dân nhà Trần.
+           </span>
+           </p>
+           </div>
+           <div class="question" data-question-id="23">
+           <span class="question-number">Câu 23 - Lịch sử Thế Giới</span>
+           <p>
+           <span class="fill-in-blank-inline">
+           <br><input type="text" class="blank-input" data-blank-id="9" data-correct-answer="Moscow" maxlength="20"> là thủ đô của nước Nga, một trung tâm chính trị, kinh tế và văn hóa quan trọng của thế giới.
+           </span>
+           </p>
+           </div>
+           <div class="question" data-question-id="24">
+           <span class="question-number">Câu 24 - Lịch sử Thế Giới</span>
+           <p>
+           <span class="fill-in-blank-inline">
+           <br>Hội nghị Yalta diễn ra vào năm <input type="text" class="blank-input" data-blank-id="10" data-correct-answer="1945" maxlength="20">, đánh dấu sự phân chia ảnh hưởng của các cường quốc sau Chiến tranh thế giới thứ hai.
+           </span>.
+           </p>
+           </div>
+           <div class="question" data-question-id="25"> <span class="question-number">Câu 25 - Lịch sử Việt Nam</span>
+           <p>
+           <span class="fill-in-blank-inline">
+           <br>Tướng <input type="text" class="blank-input" data-blank-id="11" data-correct-answer="Trần Hưng Đạo" maxlength="20"> là người đã chỉ huy quân đội nhà Trần đánh bại quân Mông - Nguyên lần thứ 2, thể hiện tài năng quân sự và tinh thần yêu nước của dân tộc ta.
+           </span>
+           </p>
+           </div>
+           <div class="question" data-question-id="26">
+           <span class="question-number">Câu 26 - Lịch sử Việt Nam</span>
+           <p>
+           <span class="fill-in-blank-inline">
+           <br>Triều đại <input type="text" class="blank-input" data-blank-id="12" data-correct-answer="Lý Trần" maxlength="20"> có thời kỳ phát triển rực rỡ của văn hóa Đại Việt trong lịch sử, với nhiều thành tựu về văn học, nghệ thuật và kiến trúc.
+           </span>
+           </p>
+           </div>
+           <div class="question" data-question-id="27">
+           <span class="question-number">Câu 27 - Lịch sử Thế Giới</span>
+           <p>
+           <span class="fill-in-blank-inline">
+           <br>Cuộc chiến tranh <input type="text" class="blank-input" data-blank-id="13" data-correct-answer="Mỹ Xô" maxlength="20"> được biết đến là "Cuộc chiến tranh Lạnh", một cuộc đối đầu căng thẳng giữa hai siêu cường về chính trị, kinh tế và quân sự.
+           </span>.
+           </p>
+           </div>
+           <div class="question" data-question-id="28">
+           <span class="question-number">Câu 28 - Lịch sử Thế Giới</span>
+           <p>
+           <span class="fill-in-blank-inline">
+           <br><input type="text" class="blank-input" data-blank-id="14" data-correct-answer="Fidel Castro" maxlength="20"> là người đã lãnh đạo cuộc kháng chiến của nhân dân Cuba chống chế độ Batista, mở ra một giai đoạn mới trong lịch sử Cuba.
+           </span>
+           </p>
+           </div>
+           <div class="question" data-question-id="29">
+           <span class="question-number">Câu 29 - Lịch sử Việt Nam</span>
+           <p>
+           <span class="fill-in-blank-inline">
+           <br>Chiến dịch <input type="text" class="blank-input" data-blank-id="15" data-correct-answer="Hồ Chí Minh" maxlength="20"> năm 1975 đã giải phóng hoàn toàn miền Nam, thống nhất đất nước, kết thúc cuộc kháng chiến chống Mỹ cứu nước.
+           </span>
+           </p>
+           </div>
+           <div class="question" data-question-id="30">
+           <span class="question-number">Câu 30 - Lịch sử Thế Giới</span>
+           <p>
+           <span class="fill-in-blank-inline">
+           <br><input type="text" class="blank-input" data-blank-id="16" data-correct-answer="Mahatma Gandhi" maxlength="20"> là người đặt nền móng cho phong trào đấu tranh bất bạo động ở Ấn Độ, có ảnh hưởng lớn đến phong trào giải phóng dân tộc trên toàn thế giới.
+           </span>
+           </p>
+           </div>
+           <div class="question" data-question-id="31">
+           <span class="question-number">Câu 31 - Lịch sử Việt Nam</span>
+           <p>
+           <span class="fill-in-blank-inline">
+           <br> <img src="https://lh5.googleusercontent.com/proxy/Ce89jXf9UHguRrXvnmQG-pOi55jZH1eBcHJDEADmMTcLcjePMnDIrNmcc2IWSMgejAQXskgXFXbTVeyD6cd1InCCWPeD8xfEUbX0" alt="Vua Bảo Đại" class="answer-image"> <br>Đây là <input type="text" class="blank-input" data-blank-id="17" data-correct-answer="Vua Bảo Đại" maxlength="20"> ?
+           </span>
+           </p>
+           </div>
+           <div class="navigation-buttons">
+           <button type="button" id="prev-btn">Trang trước</button>
+           <button type="button" id="next-btn">Trang sau</button>
+           </div>
+           </div>
+           <div id="result" style="display: none;">
+           <h2>Kết quả bài thi</h2>
+           <p>Điểm của bạn: <span id="score"></span>/310</p>
+           <p id="time-taken" style="display: none;">Thời gian làm bài: <span id="time-display"></span></p>
+           <a id="back-button" href="trangcanhan.html">Quay về</a>
+           </div>
+           <div id="error-message">
+           Vui lòng chọn đáp án cho tất cả các câu hỏi trước khi nộp bài!
+           </div>
+           <div id="lock-message">
+           Bài thi đã bị khóa vui lòng thử lại sau!
+           </div>
+           <div class="popup" id="exit-popup">
+           <div class="icon-danger">⚠️</div>
+           <h2>Cảnh báo: Bạn đã vi phạm quy chế thi.</h2>
+           <p>Vui lòng quay lại bài thi!</p>
+           <button id="popup-ok-btn">Đã hiểu</button>
+           </div>
+           
+           </div>
+           <script>
+           const timerElement = document.getElementById('timer');
+           let timeLeft = 30 * 60;
+           let timerInterval;
+           const questions = document.querySelectorAll('.question');
+           let currentQuestionIndex = 0;
+           let timeTaken;
+           const quizForm = document.getElementById('quiz-form');
+           const errorMessage = document.getElementById('error-message');
+           const quizContainer = document.getElementById('quiz-container');
+           const rulesCheckbox = document.getElementById('rules-checkbox');
+           const exitPopup = document.getElementById('exit-popup');
+           const popupOkBtn = document.getElementById('popup-ok-btn');
+           let exitStartTime = 0;
+           let totalExitTime = parseFloat(localStorage.getItem('totalExitTime') || 0);
+           const lockMessage = document.getElementById('lock-message');
+           const link = window.location.href.split('/').pop();
+           const lockTime = localStorage.getItem(`lockTime_${link}`);
+           let isSubmitted = false;
+           const enterCodeContainer = document.getElementById('enter-code-container');
+           const enterCodeInput = document.getElementById('enter-code');
+           const confirmCodeButton = document.getElementById('confirm-code-button');
+           const startButton = document.getElementById('start-button');
+           const correctCode = "TLS959403";
+           function checkLock(){
+           if(lockTime){
+           const lockDate = new Date(parseInt(lockTime));
+           const now = new Date();
+           if(now < lockDate){
+           quizContainer.style.display = 'none';
+           lockMessage.style.display = 'block';
+           return true;
+           }else{
+           localStorage.removeItem(`lockTime_${link}`);
+           totalExitTime = 0;
+           localStorage.setItem('totalExitTime',0);
+           return false;
+           }
+           }
+           return false;
+           }
+           if(checkLock()){
+           document.querySelector('.quiz-rules').style.display ='none';
+           startButton.style.display = 'none';
+           }
+           function updateTimer() {
+           const minutes = Math.floor(timeLeft / 60);
+           const seconds = timeLeft % 60;
+           timerElement.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+           if (timeLeft <= 0) {
+           clearInterval(timerInterval);
+           quizForm.submit();
+           submitQuiz();
+           } else {
+           timeLeft--;
+           }
+           }
+           function startTimer() {
+           updateTimer();
+           timerInterval = setInterval(updateTimer, 1000);
+           }
+           function showQuestion(index) {
+           questions.forEach((question, i) => {
+           question.classList.toggle('active', i === index);
+           });
+           }
+           function toggleQuizDisplay() {
+           document.querySelector('.quiz-rules').style.display = 'none';
+           quizContainer.style.display = 'block';
+           }
+           function submitQuiz(){
+           if(quizForm.style.display != 'none') {
+           quizForm.dispatchEvent(new Event('submit'));
+           }
+           }
+           confirmCodeButton.addEventListener('click',function(){
+           if(enterCodeInput.value.trim() === correctCode){
+           enterCodeContainer.style.display = 'none';
+           startButton.style.display = 'block';
+           } else {
+           errorMessage.textContent = "Mã dự thi không chính xác, vui lòng thử lại";
+           errorMessage.style.display = 'block';
+           setTimeout(() => {
+           errorMessage.style.display = 'none';
+           }, 2000);
+           }
+           });
+           document.addEventListener('DOMContentLoaded', function() {
+           if(!checkLock()){
+           showQuestion(currentQuestionIndex);
+           }
+           });
+           startButton.addEventListener('click', function(){
+           if(!rulesCheckbox.checked){
+           errorMessage.textContent = "Bạn chưa đồng ý với quy chế dự thi";
+           errorMessage.style.display = 'block';
+           setTimeout(() => {
+           errorMessage.style.display = 'none';
+           }, 2000);
+           return;
+           }
+           startTimer();
+           toggleQuizDisplay();
+           });
+           quizForm.addEventListener('submit', function(e) {
+           e.preventDefault();
+           isSubmitted = true;
+           timeTaken = 30 * 60 - timeLeft;
+           let score = 0;
+           let answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length + document.querySelectorAll('.blank-input[data-correct-answer]').length;
+           const checkboxQuestions = document.querySelectorAll('.question[data-question-id="13"] input[type="checkbox"]:checked, .question[data-question-id="14"] input[type="checkbox"]:checked');
+           answeredQuestions += checkboxQuestions.length;
+           const answers = {
+           q1: 'c',
+           q2: 'c',
+           q3: 'c',
+           q4: 'c',
+           q5: 'c',
+           q6: 'b',
+           q7: 'c',
+           q8: 'b',
+           q9: 'b',
+           q10: 'b',
+           q11: 'd',
+           q12: 'b',
+           q13: ['a', 'b','c'],
+           q14: ['a', 'b', 'd'],
+           };
+           if(answeredQuestions === 0) {
+           errorMessage.textContent = "Bạn chưa chọn đáp án nào!";
+           errorMessage.style.display = 'block';
+           setTimeout(() => {
+           errorMessage.style.display = 'none';
+           }, 2000);
+           return;
+           }
+           errorMessage.style.display = 'none';
+           for(let question in answers) {
+           if(question === "q13" || question === "q14"){
+           const selectedCheckBox = document.querySelectorAll(`.question[data-question-id="${question.slice(1)}"] input[type="checkbox"]:checked`);
+           let correct = true;
+           let correctAnswers = answers[question];
+           if(selectedCheckBox.length === 0){
+           correct = false;
+           }else{
+           let countCorrect = 0;
+           selectedCheckBox.forEach(checkbox => {
+           if(correctAnswers.includes(checkbox.value)){
+           countCorrect++;
+           }
+           })
+           if(countCorrect >= 3){
+           correct = true;
+           } else{
+           correct = false;
+           }
+           }
+           if(correct) {
+                               score += 10;
+                           }
+                       }else{
+                          const selectedAnswer = document.querySelector(`input[name="${question}"]:checked`);
+                           if(selectedAnswer && selectedAnswer.value === answers[question]) {
+                               score += 10;
+                           }
+                      }
+               }
+               // Tính điểm cho phần điền từ
+               const blankInputs = document.querySelectorAll('.blank-input[data-correct-answer]');
+              blankInputs.forEach(input => {
+                  const inputValue = input.value.trim();
+                   if(inputValue === input.dataset.correctAnswer) {
+                        score += 10;
+                    }
+               });
+              errorMessage.style.display = 'none';
+                 document.getElementById('score').textContent = score;
+                  const minutes = Math.floor(timeTaken / 60);
+                 const seconds = timeTaken % 60;
+                 document.getElementById('time-display').textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                  document.getElementById('time-taken').style.display = 'block';
+                 document.getElementById('result').style.display = 'block';
+                 quizContainer.style.display = 'none';
+                  timerElement.style.display = 'none';
+                 document.querySelectorAll('.navigation-buttons').forEach(e=>e.style.display ='none');
+                  document.getElementById('back-button').style.display = 'block';
+                  clearInterval(timerInterval);
+                const storedScore = localStorage.getItem(`score_${link}`);
+                    if(storedScore){
+                        if(score > parseInt(storedScore)){
+                           localStorage.setItem(`score_${link}`,score);
+                       }
+                    } else {
+                          localStorage.setItem(`score_${link}`, score);
+                     }
+                    });
+document.getElementById('next-btn').addEventListener('click', () => {
+if(currentQuestionIndex < questions.length-1)
+{
+currentQuestionIndex++;
+showQuestion(currentQuestionIndex);
+}
+});
+document.getElementById('prev-btn').addEventListener('click', () => {
+if(currentQuestionIndex > 0)
+{
+currentQuestionIndex--;
+showQuestion(currentQuestionIndex);
+}
+});
+// Chống copy
+document.addEventListener('contextmenu', (e) => {
+e.preventDefault();
+});
+document.addEventListener('keydown', (e) => {
+if ((e.ctrlKey && (e.key === 'c' || e.key === 'C')) || (e.ctrlKey && (e.key === 'v' || e.key === 'V')) || (e.ctrlKey && (e.key === 'x' || e.key === 'X'))){
+e.preventDefault();
+}
+});
+window.onbeforeunload = function(e){
+if(!isSubmitted){
+exitStartTime = new Date().getTime();
+exitPopup.style.display = 'block';
+e.preventDefault();
+e.returnValue = "Bạn có chắc chắn muốn rời khỏi trang này?";
+}
+}
+popupOkBtn.addEventListener('click', function() {
+exitPopup.style.display = 'none';
+const exitEndTime = new Date().getTime();
+const exitTime = (exitEndTime - exitStartTime) / 1000;
+totalExitTime += exitTime;
+localStorage.setItem('totalExitTime', totalExitTime);
+if (totalExitTime > 15){
+const lockDate = new Date();
+lockDate.setDate(lockDate.getDate()+2);
+localStorage.setItem(lockTime_$ , lockDate.getTime());
+checkLock();
+}
+});
+</script>
+
+</body>
+</html>

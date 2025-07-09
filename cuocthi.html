@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIO - Sân chơi Lịch sử Trực tuyến</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        :root {
+            --primary-color: #7c4700; /* Nâu đất lịch sử */
+            --secondary-color: #ffd600;
+            --accent-color: #b8860b; /* Vàng đồng */
+            --text-color: #2d1c08;
+            --bg-color: #f9f6f2;
+            --card-bg: #fffbe6;
+            --shadow: 0 8px 32px 0 rgba(124, 71, 0, 0.10);
+            --radius: 18px;
+            --font-family: 'Nunito', 'Segoe UI', Arial, sans-serif;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            font-size: 18px;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        h1, h2, h3, h4 {
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 8px #fffbe6;
+        }
+
+        h1 {
+            font-size: 3.2rem;
+        }
+        h2 {
+            font-size: 2.2rem;
+            margin-bottom: 32px;
+        }
+        h3 {
+            font-size: 1.4rem;
+        }
+
+        /* Header 4.0 */
+        header {
+            background: linear-gradient(90deg, #5d3310 60%, var(--accent-color) 100%);
+            box-shadow: var(--shadow);
+            padding: 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 80px;
+        }
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 2px;
+            text-decoration: none;
+            transition: color 0.3s;
+            text-shadow: 0 2px 8px #7c4700;
+        }
+        .logo:hover {
+            color: var(--secondary-color);
+        }
+        nav ul {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+        nav a {
+            color: #fff;
+            font-weight: 700;
+            padding: 10px 22px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+            background: rgba(124, 71, 0, 0.08);
+        }
+        nav a:hover, nav .login-btn:hover {
+            background: var(--secondary-color);
+            color: var(--primary-color);
+        }
+        .login-btn {
+            background: var(--secondary-color);
+            color: var(--primary-color);
+            font-weight: 800;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 28px;
+            margin-left: 12px;
+            box-shadow: 0 2px 8px rgba(124,71,0,0.08);
+            transition: background 0.2s, color 0.2s, transform 0.2s;
+        }
+        .login-btn:active {
+            transform: scale(0.97);
+        }
+
+        /* Hero 4.0 */
+        #hero {
+            background: linear-gradient(120deg, #7c4700 60%, #b8860b 100%);
+            color: #fffbe6;
+            padding: 120px 0 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        #hero .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+        #hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 18px;
+            text-shadow: 0 4px 24px #5d3310;
+            color: #fffbe6;
+        }
+        #hero p {
+            font-size: 1.4rem;
+            font-weight: 400;
+            margin-bottom: 38px;
+            max-width: 600px;
+            text-align: center;
+            color: #fffbe6;
+            text-shadow: 0 2px 8px #7c4700;
+        }
+        .cta-btn {
+            background: var(--secondary-color);
+            color: var(--primary-color);
+            font-weight: 800;
+            font-size: 1.25rem;
+            padding: 18px 48px;
+            border-radius: 12px;
+            text-decoration: none;
+            box-shadow: 0 6px 24px rgba(124,71,0,0.12);
+            transition: background 0.2s, color 0.2s, transform 0.2s;
+        }
+        .cta-btn:hover {
+            background: var(--accent-color);
+            color: #fffbe6;
+            transform: translateY(-2px) scale(1.03);
+        }
+
+        /* Features 4.0 */
+        #features {
+            background: var(--bg-color);
+            padding: 80px 0 40px 0;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 36px;
+        }
+        .feature-item {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 38px 28px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .feature-item:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 12px 32px 0 rgba(124, 71, 0, 0.18);
+        }
+        .feature-item i {
+            font-size: 2.8rem;
+            color: var(--accent-color);
+            margin-bottom: 18px;
+            text-shadow: 0 2px 8px #fffbe6;
+        }
+        .feature-item h3 {
+            margin-bottom: 10px;
+        }
+        .feature-item p {
+            color: #7c4700;
+        }
+
+        /* Highlights 4.0 */
+        #highlights {
+            background: #fffbe6;
+            padding: 60px 0 40px 0;
+        }
+        .highlights-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            list-style: none;
+        }
+        .highlights-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 18px;
+            background: var(--bg-color);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px 20px;
+            transition: background 0.2s;
+        }
+        .highlights-list li:hover {
+            background: #ffe4b5;
+        }
+        .highlights-list i {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            margin-top: 2px;
+        }
+        .highlights-list p {
+            font-size: 1.08rem;
+            color: var(--text-color);
+        }
+
+        /* Stats 4.0 */
+        #stats {
+            background: var(--bg-color);
+            padding: 60px 0 40px 0;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 32px;
+            text-align: center;
+        }
+        .stat-item {
+            background: #fffbe6;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 32px 0;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .stat-item:hover {
+            transform: scale(1.04);
+            box-shadow: 0 12px 32px 0 rgba(124, 71, 0, 0.18);
+        }
+        .stat-item i {
+            font-size: 2.6rem;
+            color: var(--accent-color);
+            margin-bottom: 12px;
+        }
+        .stat-item h3 {
+            font-size: 2.1rem;
+            color: var(--primary-color);
+        }
+        .stat-item p {
+            color: #7c4700;
+        }
+
+        /* Service Packages 4.0 */
+        #service-packages {
+            background: #fffbe6;
+            padding: 80px 0 40px 0;
+        }
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 36px;
+        }
+        .package-item {
+            background: var(--bg-color);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .package-item:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 12px 32px 0 rgba(124, 71, 0, 0.18);
+        }
+        .package-header {
+            background: linear-gradient(90deg, #7c4700 70%, #b8860b 100%);
+            color: #fffbe6;
+            border-top-left-radius: var(--radius);
+            border-top-right-radius: var(--radius);
+            padding: 28px 0 18px 0;
+            text-align: center;
+        }
+        .package-header h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0;
+        }
+        .package-price {
+            font-size: 2rem;
+            font-weight: 800;
+        }
+        .package-body {
+            padding: 28px 24px 0 24px;
+            flex: 1;
+        }
+        .package-features {
+            list-style: none;
+        }
+        .package-features li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .package-features i {
+            color: var(--accent-color);
+        }
+        .package-footer {
+            padding: 24px 0 28px 0;
+            text-align: center;
+        }
+        .package-btn {
+            background: var(--secondary-color);
+            color: var(--primary-color);
+            font-weight: 800;
+            padding: 12px 36px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: background 0.2s, color 0.2s, transform 0.2s;
+        }
+        .package-btn:hover {
+            background: var(--accent-color);
+            color: #fffbe6;
+            transform: scale(1.04);
+        }
+
+        /* SIO 2026 Section 4.0 */
+        #sio2026 {
+            background: var(--bg-color);
+            padding: 80px 0 40px 0;
+        }
+        #sio2026 .container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 48px;
+        }
+        #sio2026 h2 {
+            flex: 1 1 100%;
+            margin-bottom: 18px;
+            text-align: left;
+        }
+        #sio2026 p {
+            flex: 1 1 400px;
+            font-size: 1.18rem;
+            color: var(--text-color);
+            margin-bottom: 0;
+        }
+        #sio2026 img {
+            flex: 1 1 340px;
+            max-width: 420px;
+            width: 100%;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin: 0 auto;
+            display: block;
+            border: 4px solid #b8860b;
+        }
+
+        /* Testimonials 4.0 */
+        #testimonials {
+            background: #fffbe6;
+            padding: 80px 0 40px 0;
+        }
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 36px;
+        }
+        .testimonial-item {
+            background: var(--bg-color);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 36px 28px;
+            text-align: center;
+        }
+        .testimonial-item img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            margin-bottom: 18px;
+            object-fit: cover;
+            border: 4px solid var(--accent-color);
+        }
+        .testimonial-item p {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            margin-bottom: 14px;
+        }
+        .testimonial-item cite {
+            font-style: italic;
+            color: #7c4700;
+        }
+
+        /* Footer 4.0 */
+        footer {
+            background: linear-gradient(90deg, #5d3310 60%, #b8860b 100%);
+            color: #fffbe6;
+            padding: 64px 0 32px 0;
+        }
+        footer .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 36px;
+        }
+        footer h4 {
+            font-size: 1.18rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+            color: #fffbe6;
+        }
+        footer ul {
+            list-style: none;
+        }
+        footer li {
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+        footer a {
+            color: #fffbe6;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        footer a:hover {
+            color: var(--secondary-color);
+        }
+        .footer-col i {
+            margin-right: 10px;
+        }
+
+        /* Responsive 4.0 */
+        @media (max-width: 1024px) {
+            .container {
+            padding: 0 16px;
+            }
+            #sio2026 .container {
+            flex-direction: column;
+            gap: 24px;
+            }
+            #sio2026 h2 {
+            text-align: center;
+            }
+        }
+        @media (max-width: 768px) {
+            h1 { font-size: 2.1rem; }
+            h2 { font-size: 1.4rem; }
+            header .container {
+            flex-direction: column;
+            gap: 12px;
+            min-height: unset;
+            }
+            nav ul {
+            flex-direction: column;
+            gap: 8px;
+            }
+            #hero {
+            padding: 60px 0 40px 0;
+            }
+            .features-grid,
+            .highlights-list,
+            .stats-grid,
+            .packages-grid,
+            .testimonials-grid,
+            footer .container {
+            grid-template-columns: 1fr;
+            }
+            #sio2026 .container {
+            flex-direction: column;
+            gap: 18px;
+            }
+        }
+        @media (max-width: 480px) {
+            .container {
+            padding: 0 6px;
+            }
+            #hero h1 { font-size: 1.3rem; }
+            .cta-btn { font-size: 1rem; padding: 12px 18px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <a href="#" class="logo">SIO</a>
+            <nav>
+                <ul>
+                    <li><a href="cuocthi.html">Trang chủ</a></li>
+                    <li><a href="tintuc.html">Tin tức</a></li>
+                    <li><a href="dangnhap.html" class="login-btn">Đăng nhập</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="hero">
+        <div class="container">
+            <h1>Kiến Thức Lịch Sử - Nền Tảng Tương Lai</h1>
+            <p>Sân chơi trí tuệ giúp bạn khám phá và chinh phục những kiến thức lịch sử.</p>
+            <a href="danhnhap.html" class="cta-btn">Tham gia ngay</a>
+        </div>
+    </section>
+
+    <section id="features">
+        <div class="container">
+            <h2>Tính Năng Nổi Bật</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h3>Học Hỏi Thú Vị</h3>
+                    <p>Nâng cao kiến thức lịch sử một cách dễ dàng và hấp dẫn.</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-users"></i>
+                    <h3>Cộng Đồng Sôi Động</h3>
+                    <p>Kết nối với những người cùng đam mê và chia sẻ kiến thức.</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-trophy"></i>
+                    <h3>Thử Thách và Vinh Danh</h3>
+                    <p>Tham gia các cuộc thi và giành những giải thưởng hấp dẫn.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="highlights">
+        <div class="container">
+            <h2>Điểm Nổi Bật Của SIO</h2>
+            <ul class="highlights-list">
+                <li>
+                    <i class="fas fa-book"></i>
+                    <p>Nội dung bám sát chương trình học, mở rộng kiến thức.</p>
+                </li>
+                <li>
+                    <i class="fas fa-gamepad"></i>
+                    <p>Hình thức thi hấp dẫn, lôi cuốn.</p>
+                </li>
+                <li>
+                    <i class="fas fa-comments"></i>
+                    <p>Cộng đồng hỗ trợ nhiệt tình, giải đáp thắc mắc nhanh chóng.</p>
+                </li>
+                <li>
+                    <i class="fas fa-brain"></i>
+                    <p>Cơ hội rèn luyện kỹ năng tư duy, phản biện, làm việc nhóm.</p>
+                </li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="stats">
+        <div class="container">
+            <h2>Những Con Số Ấn Tượng</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <i class="fas fa-users"></i>
+                    <h3>10,000+</h3>
+                    <p>Thí sinh tham gia</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-question-circle"></i>
+                    <h3>5,000+</h3>
+                    <p>Câu hỏi lịch sử</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-university"></i>
+                    <h3>200+</h3>
+                    <p>Trường học tham gia</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-trophy"></i>
+                    <h3>100+</h3>
+                    <p>Giải thưởng giá trị</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="service-packages">
+        <div class="container">
+            <h2>Các Gói Dịch Vụ SIO</h2>
+            <div class="packages-grid">
+                <div class="package-item">
+                    <div class="package-header">
+                        <h3>Gói Cơ Bản</h3>
+                        <p class="package-price">Miễn phí</p>
+                    </div>
+                    <div class="package-body">
+                        <ul class="package-features">
+                            <li><i class="fas fa-check"></i><p>Truy cập câu hỏi cơ bản</p></li>
+                            <li><i class="fas fa-check"></i><p>Tham gia vòng loại</p></li>
+                        </ul>
+                    </div>
+                    <div class="package-footer">
+                        <a href="#" class="package-btn">Đăng ký</a>
+                    </div>
+                </div>
+
+                <div class="package-item">
+                    <div class="package-header">
+                        <h3>Gói Nâng Cao</h3>
+                        <p class="package-price">50,000 VNĐ/tháng</p>
+                    </div>
+                    <div class="package-body">
+                        <ul class="package-features">
+                            <li><i class="fas fa-check"></i><p>Truy cập toàn bộ câu hỏi</p></li>
+                            <li><i class="fas fa-check"></i><p>Tham gia tất cả các vòng thi</p></li>
+                            <li><i class="fas fa-check"></i><p>Nhận hỗ trợ ưu tiên</p></li>
+                        </ul>
+                    </div>
+                    <div class="package-footer">
+                        <a href="#" class="package-btn">Nâng cấp</a>
+                    </div>
+                </div>
+
+                <div class="package-item">
+                    <div class="package-header">
+                        <h3>Gói VIP</h3>
+                        <p class="package-price">100,000 VNĐ/tháng</p>
+                    </div>
+                    <div class="package-body">
+                        <ul class="package-features">
+                            <li><i class="fas fa-check"></i><p>Quyền lợi gói Nâng cao</p></li>
+                            <li><i class="fas fa-check"></i><p>Tham gia sự kiện đặc biệt</p></li>
+                            <li><i class="fas fa-check"></i><p>Hỗ trợ 24/7</p></li>
+                        </ul>
+                    </div>
+                    <div class="package-footer">
+                        <a href="#" class="package-btn">Nâng cấp</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="sio2026">
+        <div class="container">
+            <h2>Sân Chơi SIO Năm 2026</h2>
+            <p>SIO không ngừng đổi mới và phát triển. Năm 2026, chúng tôi hứa hẹn mang đến một sân chơi lịch sử quy mô lớn hơn, hấp dẫn hơn, với nhiều thử thách và bất ngờ thú vị.</p>
+            <img src="https://images.unsplash.com/photo-1556075798-78769cd18f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80" alt="SIO 2026">
+        </div>
+    </section>
+
+    <section id="testimonials">
+        <div class="container">
+            <h2>Ý Kiến Từ Chuyên Gia</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-item">
+                    <img src="https://randomuser.me/api/portraits/men/11.jpg" alt="Chuyên gia 1">
+                    <p>"SIO là một sân chơi bổ ích, giúp các em học sinh yêu thích môn Lịch sử và phát triển tư duy phản biện."</p>
+                    <cite>GS. Nguyễn Văn A, Nhà sử học</cite>
+                </div>
+                <div class="testimonial-item">
+                    <img src="https://randomuser.me/api/portraits/women/12.jpg" alt="Chuyên gia 2">
+                    <p>"Tôi đánh giá cao sự sáng tạo và đổi mới của SIO trong việc truyền tải kiến thức lịch sử một cách hấp dẫn."</p>
+                    <cite>ThS. Trần Thị B, Giáo viên Lịch sử</cite>
+                </div>
+            </div>
+        </div>
+    </section>
+
+   <footer>
+        <div class="container">
+            <div class="footer-col">
+                <h4>Về SIO</h4>
+                <ul>
+                    <li><a href="#">Giới thiệu</a></li>
+                    <li><a href="#">Điều khoản sử dụng</a></li>
+                    <li><a href="#">Chính sách bảo mật</a></li>
+                    <li><a href="#">Câu hỏi thường gặp</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Liên hệ</h4>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i>[Địa chỉ công ty]</li>
+                    <li><i class="fas fa-phone"></i><a href="tel:[Số điện thoại]">[Số điện thoại]</a></li>
+                    <li><i class="fas fa-envelope"></i><a href="mailto:[Email]">[Email]</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Mạng xã hội</h4>
+                <ul>
+                    <li><a href="#"><i class="fab fa-facebook"></i>Facebook</a></li>
+                    <li><a href="#"><i class="fab fa-youtube"></i>Youtube</a></li>
+                    <li><a href="#"><i class="fab fa-instagram"></i>Instagram</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

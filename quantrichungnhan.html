@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Chứng Nhận (Admin)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+     <style>
+      body {
+        background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+        min-height: 100vh;
+        margin: 0;
+        font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+      }
+      .container {
+        max-width: 1100px;
+        margin: 60px auto 30px auto;
+        padding: 0 20px;
+      }
+      .certificate-creator {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        padding: 32px 36px 28px 36px;
+        margin-bottom: 32px;
+        position: relative;
+        max-width: 1000px;
+        min-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+        border: 1px solid #e3e6f0;
+      }
+      .certificate-creator h2 {
+        font-weight: 700;
+        color: #2d3a4b;
+        margin-bottom: 24px;
+        text-align: center;
+        letter-spacing: 1px;
+      }
+      .form-group {
+        margin-bottom: 18px;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 7px;
+        font-weight: 600;
+        color: #2d3a4b;
+      }
+      #user-search {
+        padding: 12px;
+        border: 1px solid #bfc9d1;
+        border-radius: 7px;
+        margin-bottom: 12px;
+        font-size: 1rem;
+        background: #f7fafd;
+        transition: border 0.2s;
+      }
+      #user-search:focus {
+        border: 1.5px solid #3498db;
+        outline: none;
+        background: #fff;
+      }
+      #user-select-container {
+        max-height: 170px;
+        overflow-y: auto;
+        background: #f7fafd;
+        border-radius: 7px;
+        border: 1px solid #e3e6f0;
+        margin-bottom: 10px;
+      }
+      #user-select {
+        min-height: 120px;
+        border: none;
+        background: transparent;
+        font-size: 1rem;
+        padding: 8px 0;
+      }
+      #certificate-form {
+        max-width: 520px;
+        margin: 0 auto;
+      }
+      #certificate-form button[type="submit"] {
+        display: block;
+        margin: 18px auto 0 auto;
+        background: linear-gradient(90deg, #3498db 0%, #6dd5fa 100%);
+        color: #fff;
+        border: none;
+        padding: 12px 32px;
+        border-radius: 7px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(52,152,219,0.08);
+        transition: background 0.2s;
+      }
+      #certificate-form button[type="submit"]:hover {
+        background: linear-gradient(90deg, #2980b9 0%, #57c1eb 100%);
+      }
+      .btn-certificate {
+        display: none;
+        margin: 18px auto 0 auto;
+        background: linear-gradient(90deg, #27ae60 0%, #6dd5fa 100%);
+        color: #fff;
+        border: none;
+        padding: 12px 32px;
+        border-radius: 7px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(39,174,96,0.08);
+        transition: background 0.2s;
+      }
+      .btn-certificate:hover {
+        background: linear-gradient(90deg, #219150 0%, #57c1eb 100%);
+      }
+      #certificate-preview {
+        border: 2px solid #e3e6f0;
+        padding: 18px;
+        border-radius: 10px;
+        margin-top: 18px;
+        background: #f7fafd;
+        position: relative;
+        min-height: 220px;
+        box-shadow: 0 2px 8px rgba(52,152,219,0.04);
+      }
+      #certificate-preview img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto 10px auto;
+        border-radius: 7px;
+        box-shadow: 0 2px 8px rgba(52,152,219,0.08);
+      }
+      .draggable {
+        position: absolute;
+        cursor: move;
+        padding: 7px 16px;
+        background: rgba(255,255,255,0.85);
+        border-radius: 7px;
+        border: 1.5px dashed #3498db;
+        box-shadow: 0 1px 4px rgba(52,152,219,0.08);
+        font-weight: 500;
+        color: #2d3a4b;
+        z-index: 10;
+      }
+      .resizable {
+        resize: both;
+        overflow: auto;
+      }
+      .draggable.resizable span {
+        font-size: 1.15rem;
+        white-space: nowrap;
+      }
+      #certificate-preview .resizable {
+        border: 2px dashed #6dd5fa;
+      }
+      #certificate-preview span.ui-resizable-handle {
+        background: #3498db;
+        border: 1px solid #fff;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      #certificate-preview span.ui-resizable-se {
+        right: -7px;
+        bottom: -7px;
+      }
+      #certificate-preview span.ui-resizable-sw {
+        left: -7px;
+        bottom: -7px;
+      }
+      #certificate-preview span.ui-resizable-ne {
+        right: -7px;
+        top: -7px;
+      }
+      #certificate-preview span.ui-resizable-nw {
+        left: -7px;
+        top: -7px;
+      }
+      #point-select {
+        padding: 12px;
+        border-radius: 7px;
+        border: 1px solid #bfc9d1;
+        background: #f7fafd;
+      }
+      #certificate-list {
+        margin-top: 32px;
+        border: 1.5px solid #e3e6f0;
+        padding: 18px 24px;
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 2px 8px rgba(52,152,219,0.04);
+      }
+      #certificate-list h3 {
+        font-weight: 700;
+        color: #2d3a4b;
+        margin-bottom: 18px;
+        letter-spacing: 1px;
+      }
+      #certificate-list ul {
+        list-style: none;
+        padding: 0;
+        max-height: 320px;
+        overflow-y: auto;
+      }
+      #certificate-list li {
+        padding: 12px 0;
+        border-bottom: 1px solid #e3e6f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.05rem;
+      }
+      #certificate-list li:last-child {
+        border-bottom: none;
+      }
+      #certificate-list li span {
+        color: #34495e;
+        font-weight: 500;
+      }
+      .btn-certificate-list {
+        background: linear-gradient(90deg, #3498db 0%, #6dd5fa 100%);
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s;
+        font-size: 1rem;
+        font-weight: 500;
+        white-space: nowrap;
+        margin-right: 8px;
+        box-shadow: 0 1px 4px rgba(52,152,219,0.08);
+      }
+      .btn-certificate-list:hover {
+        background: linear-gradient(90deg, #2980b9 0%, #57c1eb 100%);
+      }
+      .btn-delete-certificate {
+        background: linear-gradient(90deg, #dc3545 0%, #f797a7 100%);
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.2s;
+        font-size: 1rem;
+        font-weight: 500;
+        white-space: nowrap;
+        box-shadow: 0 1px 4px rgba(220,53,69,0.08);
+      }
+      .btn-delete-certificate:hover {
+        background: linear-gradient(90deg, #c82333 0%, #f797a7 100%);
+      }
+      @media (max-width: 1100px) {
+        .certificate-creator {
+          max-width: 98vw;
+          min-width: 0;
+        }
+      }
+      @media (max-width: 900px) {
+        .container {
+          max-width: 98vw;
+          padding: 0 6px;
+        }
+        .certificate-creator {
+          padding: 18px 8px 16px 8px;
+          max-width: 98vw;
+          min-width: 0;
+        }
+        #certificate-list {
+          padding: 12px 6px;
+        }
+      }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="certificate-creator">
+             <div class="form-group">
+                 <input type="text" id="user-search" class="form-control" placeholder="Tìm kiếm người dùng">
+             </div>
+           <div class="form-group">
+                <label for="user-select">Chọn người dùng:</label>
+                <div id="user-select-container">
+                    <select class="form-select" id="user-select" multiple>
+                       </select>
+                   </div>
+             </div>
+          <form id="certificate-form">
+            <div class="form-group">
+                <label for="certificate-image">Ảnh chứng nhận:</label>
+                <input type="file" class="form-control" id="certificate-image" accept="image/*" required>
+             </div>
+                   <button type="submit" class="btn btn-primary">Tạo Chứng Nhận</button>
+            </form>
+            <div id="certificate-preview">
+              </div>
+              <button class="btn btn-success btn-certificate">Cấp Chứng Nhận</button>
+        </div>
+         <div id="certificate-list">
+             <h3>Danh sách chứng nhận đã tạo</h3>
+               <ul id="certificate-list-ul"></ul>
+          </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    const certificateForm = document.getElementById('certificate-form');
+    const certificatePreview = document.getElementById('certificate-preview');
+    const userSelect = document.getElementById('user-select');
+    const btnCertificate = document.querySelector('.btn-certificate');
+    const certificateListUl = document.getElementById('certificate-list-ul');
+      const userSearch = document.getElementById('user-search');
+      let certificateImageSrc = '';
+      let createdCertificates = JSON.parse(localStorage.getItem('certificates') || '[]');
+
+  function makeElementDraggable(element) {
+      $(element).draggable({
+        containment: "parent",
+         });
+  }
+   function makeElementResizable(element){
+      $(element).resizable({
+        handles: "n, e, s, w, se, sw, ne, nw",
+          containment: "parent",
+      });
+   }
+       function loadCertificates() {
+            certificateListUl.innerHTML = '';
+             createdCertificates.forEach((certificate, index) => {
+                const li = document.createElement('li');
+                 li.innerHTML = `
+                     <span>${certificate.users.join(', ')} - ${certificate.users.map(name => {
+                           let users = JSON.parse(localStorage.getItem('users') || '[]');
+                           let user = users.find(user => user.fullname === name);
+                           return `(${user.username})`;
+
+                        }).join(' ')}</span>
+
+                      <div>
+                       <button class="btn btn-certificate-list" data-index="${index}">Xem chi tiết</button>
+                       <button class="btn btn-delete-certificate" data-index="${index}">Xóa</button>
+                     </div>
+                 `;
+                  certificateListUl.appendChild(li);
+             });
+        }
+
+   function loadUsers() {
+        let users = JSON.parse(localStorage.getItem('users') || '[]');
+         userSelect.innerHTML = '';
+        users.forEach(user => {
+                const option = document.createElement('option');
+                option.value = user.username;
+                option.textContent = user.fullname;
+                 userSelect.appendChild(option);
+            });
+        }
+    loadUsers();
+    loadCertificates();
+
+    userSearch.addEventListener('input', function(){
+          const searchTerm = userSearch.value.toLowerCase();
+         let users = JSON.parse(localStorage.getItem('users') || '[]');
+          const filteredUsers = users.filter(user => user.fullname.toLowerCase().includes(searchTerm));
+           userSelect.innerHTML = "";
+          filteredUsers.forEach(user => {
+                const option = document.createElement('option');
+                option.value = user.username;
+                option.textContent = user.fullname;
+                 userSelect.appendChild(option);
+            });
+    })
+
+  certificateForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const imageFile = document.getElementById('certificate-image').files[0];
+         const selectedUsers = Array.from(userSelect.selectedOptions).map(option => option.textContent);
+         const selectedUsernames = Array.from(userSelect.selectedOptions).map(option => {
+                let users = JSON.parse(localStorage.getItem('users') || '[]');
+                let user = users.find(user => user.fullname === option.textContent);
+                return user ? user.username : null;
+            }).filter(username => username !== null); // Lấy username của người dùng
+
+          if (imageFile) {
+            const reader = new FileReader();
+             reader.onload = function(e) {
+                  certificateImageSrc = e.target.result;
+                 certificatePreview.innerHTML = `<img src="${certificateImageSrc}" alt="Certificate Image" style="width: 400px; margin: 10px 0; max-width: 100%;">`;
+
+                    const nameElement = document.createElement('div');
+                    nameElement.classList.add('draggable', 'resizable');
+                    nameElement.innerHTML =  `<span>Họ và tên: ${selectedUsers.join(', ')}</span>`;
+                    certificatePreview.appendChild(nameElement);
+                     makeElementDraggable(nameElement);
+                   makeElementResizable(nameElement);
+                     btnCertificate.style.display = 'block';
+            };
+            reader.readAsDataURL(imageFile);
+        }
+      });
+
+  btnCertificate.addEventListener('click', function(){
+    const selectedUsers = Array.from(userSelect.selectedOptions).map(option => option.textContent);
+    const selectedUsernames = Array.from(userSelect.selectedOptions).map(option => {
+                let users = JSON.parse(localStorage.getItem('users') || '[]');
+                let user = users.find(user => user.fullname === option.textContent);
+                return user ? user.username : null;
+            }).filter(username => username !== null); // Lấy username của người dùng
+      const newCertificate = {
+          users: selectedUsers,
+          usernames: selectedUsernames, // Lưu usernames vào đây
+          image: certificateImageSrc,
+        };
+      createdCertificates.push(newCertificate);
+     localStorage.setItem('certificates', JSON.stringify(createdCertificates));
+     certificatePreview.innerHTML = "";
+    btnCertificate.style.display = 'none';
+     loadCertificates();
+    alert("Đã cấp chứng nhận thành công");
+  })
+
+      certificateListUl.addEventListener('click', function(event){
+       if(event.target.classList.contains('btn-certificate-list')){
+            const index = event.target.getAttribute('data-index');
+            const certificate = createdCertificates[index];
+             certificatePreview.innerHTML = `<img src="${certificate.image}" alt="Certificate Image" style="width: 400px; margin: 10px 0; max-width: 100%;">`;
+
+                   const nameElement = document.createElement('div');
+                    nameElement.classList.add('draggable', 'resizable');
+                    nameElement.innerHTML =  `<span>Họ và tên: ${certificate.users.join(', ')}</span>`;
+                    certificatePreview.appendChild(nameElement);
+                     makeElementDraggable(nameElement);
+                   makeElementResizable(nameElement);
+            }
+
+        if(event.target.classList.contains('btn-delete-certificate')){
+             const index = event.target.getAttribute('data-index');
+             createdCertificates.splice(index, 1);
+             localStorage.setItem('certificates', JSON.stringify(createdCertificates));
+             loadCertificates();
+        }
+    })
+    </script>
+</body>
+</html>

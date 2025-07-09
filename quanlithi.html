@@ -1,0 +1,46 @@
+import * as THREE from 'three';
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+
+const numDrones = 1000; // Giảm số lượng drone để test hiệu suất
+const drones = [];
+
+const droneGeometry = new THREE.SphereGeometry(0.5, 8, 8); // Hình cầu cho drone
+const droneMaterial = new THREE.MeshBasicMaterial( { color: 0xffffff } ); // Màu trắng ban đầu
+
+
+for (let i = 0; i < numDrones; i++) {
+  const drone = new THREE.Mesh( droneGeometry, droneMaterial );
+  drone.position.x = Math.random() * 200 - 100; // Vị trí ngẫu nhiên
+  drone.position.y = Math.random() * 200 - 100;
+  drone.position.z = Math.random() * 200 - 100;
+  scene.add( drone );
+  drones.push(drone);
+}
+
+camera.position.z = 300;
+
+
+const animate = function () {
+  requestAnimationFrame( animate );
+
+  // Ví dụ: Thay đổi màu của drone theo thời gian
+  const time = Date.now() * 0.001;
+  drones.forEach((drone, index) => {
+    drone.material.color.setHSL( (index / numDrones + time * 0.1 ) % 1, 1, 0.5);
+
+    // Ví dụ di chuyển đơn giản: xoay quanh tâm
+    drone.position.x = 100 * Math.sin(time * 0.5 + index * 0.01);
+    drone.position.z = 100 * Math.cos(time * 0.5 + index * 0.01);
+
+  });
+
+
+  renderer.render( scene, camera );
+};
+
+animate();

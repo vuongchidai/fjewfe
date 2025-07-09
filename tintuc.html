@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tin tức - SIO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* General Styles */
+        :root {
+            --primary-color: #29ABE2;
+            /* Màu xanh dương tươi sáng */
+            --secondary-color: #F26419;
+            /* Màu cam nổi bật */
+            --text-color: #333;
+            --bg-color: #f5f5f5;
+            --font-family: 'Nunito', sans-serif;
+            /* Font chữ hiện đại */
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-family);
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+        }
+
+        /* Header Styles - Updated with smaller height and better alignment*/
+        header {
+            background-color: #fff;
+            padding: 8px 0;
+            /* Reduced padding for smaller height */
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            /* Ensures vertical alignment */
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            /* Slightly smaller logo */
+            font-weight: 800;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .logo:hover {
+            color: var(--secondary-color);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            align-items: center;
+        }
+
+        nav li {
+            margin-left: 25px;
+            /* Reduced margin for closer links */
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 600;
+            transition: color 0.3s ease;
+            padding: 8px 18px;
+            /* Reduced padding for smaller size */
+            border-radius: 5px;
+        }
+
+        nav a:hover {
+            color: var(--primary-color);
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .login-btn {
+            background-color: var(--secondary-color);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            /* Further reduced padding */
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            /* Smaller font size */
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .login-btn:hover {
+            background-color: #E65100;
+            transform: translateY(-2px);
+        }
+
+        /* News Section Styles - Completely Redesigned */
+        .news-section {
+            display: flex;
+            flex-direction: column;
+            /* Vertical layout */
+        }
+
+        .news-column {
+            margin-bottom: 30px;
+            /* Add space between columns */
+        }
+
+        .news-title {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .news-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--secondary-color);
+            border-radius: 2px;
+        }
+
+        .news-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .news-item {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            /* Stack content vertically */
+        }
+
+        .news-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .news-item img {
+            width: 100%;
+            /* Make image responsive */
+            max-height: 20px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .news-item-content h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .news-item-content p {
+            font-size: 1.1rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .news-item-date {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        /* Modal Styles - Updated */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            /* Darker overlay */
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 3% auto;
+            /* Higher margin for better spacing */
+            padding: 40px;
+            border-radius: 20px;
+            width: 85%;
+            max-width: 1000px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 35px;
+            font-weight: bold;
+            color: #555;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: var(--primary-color);
+        }
+
+        .modal-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 25px;
+            color: var(--primary-color);
+            font-weight: 800;
+        }
+
+        .modal-content p {
+            font-size: 1.2rem;
+            color: #495057;
+            line-height: 1.8;
+        }
+
+        /* Tabs Styles - More Modern */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            /* Increased spacing */
+            gap: 20px;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            border: none;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .tab.active {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .tab:hover {
+            transform: translateY(-3px);
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+     /* Footer Styles - Enhanced */
+        footer {
+            background-color: #ffffff;
+            color: #000000;
+            padding: 40px 0;
+            /* Adjust padding */
+            text-align: left;
+            /* Align text to the left */
+        }
+
+        footer .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        footer h4 {
+            font-size: 1.1rem;
+            /* Smaller heading */
+            font-weight: 600;
+            margin-bottom: 15px;
+            /* Reduced margin */
+            color: #000000;
+        }
+
+        footer p,
+        footer a {
+            font-size: 0.9rem;
+            /* Slightly smaller font */
+            color: #000000;
+            /* Slightly lighter text */
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: var(--secondary-color);
+            /* Consistent hover color */
+        }
+
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-col li {
+            margin-bottom: 8px;
+            /* Closer list items */
+        }
+
+        .footer-col i {
+            margin-right: 8px;
+            /* Reduced margin for icons */
+            color: #000000;
+            /* Keep icon color consistent */
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <a href="cuocthi.html" class="logo">SIO</a>
+            <nav>
+                <ul>
+                    <li><a href="cuocthi.html">Trang chủ</a></li>
+                    <li><a href="tintuc.html">Tin tức</a></li>
+                    <li><a href="dangnhap.html" class="login-btn">Đăng nhập</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+        <div class="container">
+        <div class="news-section">
+            <div class="news-column">
+                <h2 class="news-title">Thông báo quan trọng</h2>
+                <div class="tabs" id="thongbaoTabs"></div>
+                <ul class="news-list" id="thongbaoList">
+                </ul>
+            </div>
+
+            <div class="news-column">
+                <h2 class="news-title">Tin từ ban tổ chức</h2>
+                <div class="tabs" id="bantochucTabs"></div>
+                <ul class="news-list" id="bantochucList">
+                </ul>
+            </div>
+        </div>
+         <div id="newsModal" class="modal">
+            <div class="modal-content">
+                <span class="close">×</span>
+                <h2 id="modalTitle"></h2>
+                <p id="modalContent"></p>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="container">
+            <div class="footer-col">
+                <h4>Về SIO</h4>
+                <ul>
+                    <li><a href="#">Giới thiệu</a></li>
+                    <li><a href="#">Điều khoản sử dụng</a></li>
+                    <li><a href="#">Chính sách bảo mật</a></li>
+                    <li><a href="#">Câu hỏi thường gặp</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Liên hệ</h4>
+                <ul>
+                    <li><i class="fas fa-map-marker-alt"></i>[Địa chỉ công ty]</li>
+                    <li><i class="fas fa-phone"></i><a href="tel:[Số điện thoại]">[Số điện thoại]</a></li>
+                    <li><i class="fas fa-envelope"></i><a href="mailto:[Email]">[Email]</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Mạng xã hội</h4>
+                <ul>
+                    <li><a href="#"><i class="fab fa-facebook"></i>Facebook</a></li>
+                    <li><a href="#"><i class="fab fa-youtube"></i>Youtube</a></li>
+                    <li><a href="#"><i class="fab fa-instagram"></i>Instagram</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const modal = document.getElementById("newsModal");
+        const closeBtn = document.querySelector(".close");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalContent = document.getElementById("modalContent");
+        const thongbaoList = document.getElementById('thongbaoList');
+        const bantochucList = document.getElementById('bantochucList');
+        const thongbaoTabs = document.getElementById('thongbaoTabs');
+        const bantochucTabs = document.getElementById('bantochucTabs');
+        let currentPage = 1;
+        let currentCategory = null;
+        const itemsPerPage = 10;
+        let allNews = [];
+
+        function displayNews(category, page) {
+            currentCategory = category;
+            let list;
+            let tabContainer;
+            if (category === 'thongbao') {
+                list = thongbaoList;
+                tabContainer = thongbaoTabs;
+            } else if (category === 'bantochuc') {
+                list = bantochucList;
+                tabContainer = bantochucTabs;
+            }
+            list.innerHTML = '';
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const currentNews = allNews
+                .filter(news => news.category === category)
+                .slice(startIndex, endIndex);
+            currentNews.forEach(newsItem => {
+                const li = document.createElement('li');
+                li.classList.add('news-item');
+                let imageHTML = '';
+                if (newsItem.imageUrl) {
+                    imageHTML = `<img src="${newsItem.imageUrl}" alt="Ảnh tin tức" />`;
+                }
+                li.innerHTML = `
+                    ${imageHTML}
+                    <div class="news-item-content">
+                        <h3>${newsItem.title}</h3>
+                        <p>${newsItem.shortDescription || ''}</p>
+                         <p class="news-item-date">${newsItem.date || ''}</p>
+                    </div>
+                `;
+                li.addEventListener('click', () => openModal(newsItem));
+                list.appendChild(li);
+            });
+            // Render Tabs
+            const totalPages = Math.ceil(allNews.filter(news => news.category === category).length / itemsPerPage);
+            tabContainer.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const tab = document.createElement('span');
+                tab.classList.add('tab');
+                tab.textContent = i;
+                if (i === page) {
+                    tab.classList.add('active');
+                }
+                tab.addEventListener('click', () => {
+                    currentPage = i;
+                    displayNews(category, i);
+                });
+                tabContainer.appendChild(tab);
+            }
+        }
+
+        function openModal(news) {
+            modalTitle.textContent = news.title;
+            modalContent.innerHTML = news.content;
+            modal.style.display = "block";
+        }
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = "none";
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+
+        function fetchNews() {
+            allNews = JSON.parse(localStorage.getItem('sioNews')) || [];
+            allNews.sort((a, b) => a.order - b.order);
+            displayNews('thongbao', currentPage);
+            displayNews('bantochuc', currentPage);
+        }
+        fetchNews();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sàn Đấu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+          background: linear-gradient(120deg, #e3f2fd 60%, #f8fafc 100%);
+          margin: 0;
+          overflow-x: hidden;
+          font-family: 'Segoe UI', 'Arial', sans-serif;
+          color: #222;
+        }
+        .main-container {
+            display: flex;
+            padding: 32px 0;
+            margin-top: 36px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            gap: 32px;
+            }
+            .left-side, .right-side {
+            padding: 28px 22px;
+            border-radius: 18px;
+            background: #fff;
+            box-shadow: 0 4px 18px rgba(52, 152, 219, 0.10);
+            min-height: 480px;
+            }
+            .left-side {
+            flex: 0.38;
+            min-width: 260px;
+            max-width: 340px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            }
+            .right-side {
+            flex: 0.62;
+            min-width: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            }
+            .account-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 22px;
+            }
+            .account-info img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e3f2fd;
+            margin-bottom: 12px;
+            }
+            .account-info h4 {
+            font-size: 1.22rem;
+            margin: 0 0 8px 0;
+            font-weight: 600;
+            }
+            .account-info .rank {
+            background: #f1f8e9;
+            color: #388e3c;
+            border-radius: 12px;
+            padding: 4px 16px;
+            font-size: 1rem;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            }
+            .personal-info {
+            width: 100%;
+            font-size: 1rem;
+            color: #444;
+            margin-bottom: 22px;
+            }
+            .personal-info p {
+            margin: 0 0 9px 0;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            }
+            .premium-upgrade {
+            background: linear-gradient(100deg, #e3f2fd 60%, #fff 100%);
+            border-radius: 14px;
+            padding: 16px 16px 12px 16px;
+            text-align: center;
+            margin-top: 10px;
+            box-shadow: 0 2px 8px rgba(52,152,219,0.07);
+            }
+            .premium-upgrade p {
+            font-size: 1rem;
+            margin-bottom: 12px;
+            color: #1976d2;
+            }
+            .premium-upgrade button {
+            background: linear-gradient(90deg, #1976d2 60%, #64b5f6 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 9px 28px;
+            font-size: 1.08rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            }
+            .premium-upgrade button:hover {
+            background: linear-gradient(90deg, #1565c0 60%, #42a5f5 100%);
+            }
+            .btn-play {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 22px;
+            }
+            .btn-play button {
+            background: linear-gradient(90deg, #ff9800 60%, #ffd54f 100%);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 18px 60px;
+            font-size: 1.35rem;
+            font-weight: 700;
+            box-shadow: 0 2px 12px rgba(255,152,0,0.13);
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+            }
+            .btn-play button:hover {
+            background: linear-gradient(90deg, #f57c00 60%, #ffe082 100%);
+            transform: scale(1.04);
+            }
+            .rank-board {
+            width: 100%;
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 20px 14px 14px 14px;
+            box-shadow: 0 2px 8px rgba(52,152,219,0.06);
+            }
+            .rank-board h5 {
+            font-size: 1.13rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1976d2;
+            }
+            #rank-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: transparent;
+            }
+            #rank-table th, #rank-table td {
+            padding: 9px 10px;
+            text-align: center;
+            }
+            #rank-table th {
+            background: #e3f2fd;
+            color: #1976d2;
+            font-size: 1rem;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            }
+            #rank-table tr {
+            border-radius: 8px;
+            }
+            #rank-table tbody tr:nth-child(odd) {
+            background: #f4fafd;
+            }
+            #rank-table tbody tr:nth-child(even) {
+            background: #fff;
+            }
+            #rank-table td {
+            font-size: 0.99rem;
+            color: #333;
+            border-radius: 0 0 8px 8px;
+            }
+            .no-rank-data {
+            color: #aaa;
+            font-style: italic;
+            }
+            .navbar .nav-links a {
+            margin-right: 18px;
+            font-size: 1.04rem;
+            color: #1976d2;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+            }
+            .navbar .nav-links a:last-child {
+            margin-right: 0;
+            }
+            .navbar .nav-links a:hover {
+            color: #0d47a1;
+            }
+            .profile-header {
+            position: relative;
+            cursor: pointer;
+            font-size: 1.08rem;
+            color: #1976d2;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            }
+            .profile-header .fa-user-circle {
+            font-size: 1.5rem;
+            margin-right: 4px;
+            }
+            .profile-popup {
+            display: none;
+            position: absolute;
+            top: 120%;
+            right: 0;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(52,152,219,0.13);
+            min-width: 170px;
+            z-index: 10;
+            }
+            .profile-popup.active {
+            display: block;
+            }
+            .profile-popup-menu {
+            list-style: none;
+            margin: 0;
+            padding: 8px 0;
+            }
+            .profile-popup-menu li {
+            padding: 9px 18px;
+            cursor: pointer;
+            color: #1976d2;
+            font-size: 1.01rem;
+            border-radius: 7px;
+            transition: background 0.18s;
+            }
+            .profile-popup-menu li:hover {
+            background: #e3f2fd;
+            }
+            @media (max-width: 1300px) {
+            .main-container {
+              max-width: 98vw;
+              gap: 18px;
+              padding: 18px 0;
+            }
+            .left-side, .right-side {
+              min-height: 340px;
+              padding: 16px 9px;
+            }
+            .btn-play button {
+              padding: 14px 36px;
+              font-size: 1.18rem;
+            }
+            }
+            @media (max-width: 900px) {
+            .main-container {
+              flex-direction: column;
+              gap: 12px;
+              padding: 10px 0;
+              max-width: 100vw;
+            }
+            .left-side, .right-side {
+              max-width: 100vw;
+              min-width: 0;
+              width: 100%;
+              align-items: stretch;
+            }
+            .btn-play {
+              justify-content: center;
+            }
+            .btn-play button {
+              width: 100%;
+              padding: 16px 0;
+              font-size: 1.13rem;
+            }
+            }
+</style>
+</head>
+<body>
+     <div class="container-fluid">
+       <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <div class="nav-links">
+               <a href="live.html">
+                    <i class="fas fa-book" style="color: #3498db;"></i> <span>LIVE/GET</span>
+                </a>
+               <a href="luyenthi.html">
+                    <i class="fas fa-pencil-alt" style="color: #e67e22;"></i> <span>Luyện thi</span>
+                </a>
+                 <a href="dautruong.html">
+                    <i class="fas fa-gamepad" style="color: #9b59b6;"></i> <span>Đấu trường</span>
+                </a>
+                 <a href="trangcanhan.html">
+                  <i class="fas fa-trophy" style="color: #27ae60;"></i> <span>Vào thi</span>
+                </a>
+            </div>
+            <div class="d-flex align-items-center">
+            <div class="profile-header">
+                <i class="fa fa-user-circle me-2"></i> <span id="header-fullname"></span>
+                <div class="profile-popup">
+                    <ul class="profile-popup-menu">
+                        <li id="info-menu">Thông tin cá nhân</li>
+                        <li id="change-password-menu">Đổi mật khẩu</li>
+                        <li id="logout-menu">Đăng xuất</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="main-container">
+        <div class="left-side">
+            <div class="account-info">
+                <img src="https://i.pinimg.com/736x/12/37/b3/1237b30268db9ee0c9cbe3a79b1ff8fa.jpg" alt="User Avatar">
+                <h4 id="account-name">Phan Thiên Di</h4>
+                <div class="rank"><i class="fas fa-medal"></i> Top 9 | 100 điểm</div>
+            </div>
+            <div class="personal-info">
+                <p><i class="fas fa-envelope"></i> Email: <span id="user-email"></span></p>
+                 <p><i class="fas fa-phone"></i> SĐT: <span id="user-phone"></span></p>
+                 <p><i class="fas fa-school"></i> Trường: <span id="user-school"></span></p>
+            </div>
+            <div class="premium-upgrade">
+                <p>Nâng cấp tài khoản lên tài khoản Premium để nhận được nhiều lượt thi đấu và các quyền lợi hấp dẫn khác.</p>
+                <a href="goi.html"><button>Nâng cấp ngay</button></a>
+            </div>
+        </div>
+        <div class="right-side">
+             <div class="btn-play">
+                <a href="thidau.html"><button> <i class="fas fa-bolt"></i>Thách đấu ngay</button></a>
+              </div>
+            <div class="rank-board">
+                <h5>Bảng xếp hạng</h5>
+                <table id="rank-table">
+                    <thead>
+                        <tr>
+                            <th>Top</th>
+                            <th>Học Sinh</th>
+                            <th>Điểm</th>
+                            <th>Thời Gian</th>
+                            <th>Số trận</th>
+                       </tr>
+                    </thead>
+                   <tbody id="rank-table-body">
+                        <tr><td colspan="5" class="no-rank-data">Chưa có dữ liệu bảng xếp hạng.</td></tr>
+                   </tbody>
+               </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    const profileHeader = document.querySelector('.profile-header');
+    const profilePopup = document.querySelector('.profile-popup');
+    const infoMenu = document.getElementById('info-menu');
+    const changePasswordMenu = document.getElementById('change-password-menu');
+    const logoutMenu = document.getElementById('logout-menu');
+    const loginTime = localStorage.getItem('loginTime');
+    const currentTime = new Date().getTime();
+    if (!loginTime || (currentTime - parseInt(loginTime)) > 24 * 60 * 60 * 1000) {
+        localStorage.removeItem('user');
+       localStorage.removeItem('loginTime');
+        window.location.href = 'dangnhap.html';
+    }
+
+    // Lấy thông tin người dùng từ localStorage
+   const storedUser = localStorage.getItem('user');
+    let user;
+    if (storedUser) {
+        user = JSON.parse(storedUser);
+    } else {
+         window.location.href = 'dangnhap.html';
+    }
+
+   // Hiển thị thông tin người dùng trên header
+    document.getElementById('header-fullname').textContent = user.fullname;
+   document.getElementById('account-name').textContent = user.fullname;
+    document.getElementById('user-email').textContent = user.email;
+   const phone = user.phone;
+   const maskedPhone = phone.slice(0, 4) + '*'.repeat(phone.length - 4);
+    document.getElementById('user-phone').textContent = maskedPhone;
+   document.getElementById('user-school').textContent = user.school;
+
+  const rankTableBody = document.getElementById('rank-table-body');
+  const rankingData = [
+        { top: 1, user: 'Võ Ngọc Tường Vy', score: 800, time: '48:54', matches: 20 },
+        { top: 2, user: 'Dương Kiều Vy', score: 200, time: '17:06', matches: 5 },
+        { top: 3, user: 'Nguyễn Quang Phúc', score: 150, time: '09:20', matches: 3 },
+         { top: 4, user: 'Lâm Nguyễn Phúc Hưng', score: 150, time: '10:15', matches: 3 },
+       { top: 5, user: 'Đào Mai Chi', score: 150, time: '11:37', matches: 3 },
+       { top: 6, user: 'Lê Nguyễn Thiên Kim', score: 150, time: '15:02', matches: 5 },
+        { top: 7, user: 'đỗ ánh dương', score: 100, time: '06:40', matches: 3 },
+        { top: 8, user: 'Vũ Lê Minh Vương', score: 100, time: '07:29', matches: 2 },
+    ];
+
+  function updateRankTable() {
+        rankTableBody.innerHTML = '';
+      if (rankingData && rankingData.length > 0) {
+           rankingData.forEach(player => {
+               const row = document.createElement('tr');
+              row.innerHTML = `
+                       <td>${player.top}</td>
+                        <td>${player.user}</td>
+                        <td>${player.score}</td>
+                       <td>${player.time}</td>
+                       <td>${player.matches}</td>
+                   `;
+                rankTableBody.appendChild(row);
+           });
+       } else{
+           rankTableBody.innerHTML = '<tr><td colspan="5" class="no-rank-data">Chưa có dữ liệu bảng xếp hạng.</td></tr>';
+       }
+    }
+   updateRankTable();
+    function toggleProfilePopup() {
+        profilePopup.classList.toggle('active');
+        if(profilePopup.classList.contains('active')){
+            document.addEventListener('click',function(event){
+              if (!profileHeader.contains(event.target)) {
+                    profilePopup.classList.remove('active');
+                    document.removeEventListener('click', arguments.callee);
+                }
+            });
+       }
+    }
+  profileHeader.addEventListener('click', toggleProfilePopup);
+
+   function closeAllPopup() {
+        profilePopup.classList.remove('active');
+  }
+   logoutMenu.addEventListener('click', function () {
+       localStorage.removeItem('user');
+        localStorage.removeItem('loginTime');
+        window.location.href = 'dangnhap.html';
+   });
+
+ // Disable text selection
+   document.addEventListener('selectstart', function(e) {
+      e.preventDefault();
+  });
+   // Disable right-click
+  document.addEventListener('contextmenu', function(e) {
+       e.preventDefault();
+    });
+    // Disable keyboard shortcuts for copy and paste
+ document.addEventListener('keydown', function(e) {
+     if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'v' || e.key === 'x' || e.key === 'a' )) {
+         e.preventDefault();
+    }
+   });
+</script>
+</body>
+</html>

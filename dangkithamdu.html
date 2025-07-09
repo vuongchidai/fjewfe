@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Ký Thi Chung Kết</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #343a40;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0069d9;
+            border-color: #0062cc;
+        }
+
+        #registration-status {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .form-control:disabled {
+            background-color: #e9ecef;
+            opacity: 1;
+        }
+
+        #confirm-section {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Đăng Ký Thi Chung Kết</h1>
+
+        <!-- Thông báo lỗi -->
+        <div id="error-message" class="alert alert-danger" style="display: none;"></div>
+
+        <!-- Xem trạng thái đăng ký -->
+        <div id="registration-status">
+            <h2>Trạng Thái Đăng Ký</h2>
+            <div class="form-group">
+                <label for="status-search-input">Tìm kiếm (Tên đăng nhập, Số điện thoại, ID):</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="status-search-input"
+                        placeholder="Nhập thông tin tìm kiếm">
+                    <button class="btn btn-outline-secondary" type="button" id="status-search-button">Tìm</button>
+                </div>
+            </div>
+            <div id="status-details" style="display: none;">
+                <h3>Thông Tin Đăng Ký:</h3>
+                <p><strong>Họ và tên:</strong> <span id="status-fullname"></span></p>
+                <p><strong>Số báo danh:</strong> <span id="status-sbd"></span></p>
+                <p><strong>Tên đăng nhập:</strong> <span id="status-username"></span></p>
+                <p><strong>Bảng thi:</strong> <span id="status-board"></span></p>
+                <p><strong>Giới tính:</strong> <span id="status-gender"></span></p>
+                <p><strong>Tỉnh:</strong> <span id="status-province"></span></p>
+                <p><strong>Khối:</strong> <span id="status-grade"></span></p>
+                <p><strong>Trường:</strong> <span id="status-school"></span></p>
+                <p><strong>Lớp:</strong> <span id="status-class"></span></p>
+                <p><strong>Trạng thái:</strong> <span id="status-status"></span></p>
+            </div>
+            <p id="no-status-message" style="display: none;">Không tìm thấy thông tin đăng ký.</p>
+        </div>
+
+        <!-- Tìm kiếm thông tin -->
+        <div class="form-group">
+            <label for="search-input">Tìm kiếm (Tên đăng nhập, Số điện thoại, ID):</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="search-input" placeholder="Nhập thông tin tìm kiếm">
+                <button class="btn btn-outline-secondary" type="button" id="search-button">Tìm</button>
+            </div>
+        </div>
+
+        <!-- Form đăng ký thông tin chi tiết -->
+        <form id="registration-form">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="fullname">Họ và tên:</label>
+                        <input type="text" class="form-control" id="fullname" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="sbd">Số báo danh:</label>
+                        <input type="text" class="form-control" id="sbd" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="username">Tên đăng nhập:</label>
+                        <input type="text" class="form-control" id="username" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Giới tính:</label>
+                        <select class="form-control" id="gender" required>
+                            <option value="">Chọn giới tính</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="school">Trường:</label>
+                        <input type="text" class="form-control" id="school" required>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="grade">Khối:</label>
+                        <select class="form-control" id="grade" required>
+                            <option value="">Chọn khối</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="class">Lớp:</label>
+                        <input type="text" class="form-control" id="class" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="board">Bảng thi:</label>
+                        <input type="text" class="form-control" id="board" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="province">Tỉnh:</label>
+                        <input type="text" class="form-control" id="province" disabled>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="agree-terms">
+                <label class="form-check-label" for="agree-terms">
+                    Tôi đồng ý tham gia kỳ thi chung kết và cam kết tuân thủ mọi quy định của ban tổ chức.
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="register-button" disabled>Đăng Ký</button>
+            <button type="button" class="btn btn-success" id="download-button" style="display: none;">Tải Giấy Thông
+                Tin</button>
+        </form>
+
+        <div id="confirm-section">
+            <h3>Xác nhận thông tin</h3>
+            <p>Vui lòng kiểm tra kỹ thông tin trước khi đăng ký:</p>
+            <p><strong>Họ và tên:</strong> <span id="confirm-fullname"></span></p>
+            <p><strong>Tên đăng nhập:</strong> <span id="confirm-username"></span></p>
+            <p><strong>Giới tính:</strong> <span id="confirm-gender"></span></p>
+            <p><strong>Tỉnh:</strong> <span id="confirm-province"></span></p>
+            <p><strong>Khối:</strong> <span id="confirm-grade"></span></p>
+            <p><strong>Trường:</strong> <span id="confirm-school"></span></p>
+            <p><strong>Lớp:</strong> <span id="confirm-class"></span></p>
+            <p><strong>Bảng thi:</strong> <span id="confirm-board"></span></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('search-input');
+            const searchButton = document.getElementById('search-button');
+            const registrationForm = document.getElementById('registration-form');
+            const registerButton = document.getElementById('register-button');
+            const downloadButton = document.getElementById('download-button');
+            const statusSearchInput = document.getElementById('status-search-input');
+            const statusSearchButton = document.getElementById('status-search-button');
+            const statusDetails = document.getElementById('status-details');
+            const noStatusMessage = document.getElementById('no-status-message');
+            const statusFullname = document.getElementById('status-fullname');
+            const statusSbd = document.getElementById('status-sbd');
+            const statusUsername = document.getElementById('status-username');
+            const statusBoard = document.getElementById('status-board');
+            const statusGender = document.getElementById('status-gender');
+            const statusProvince = document.getElementById('status-province');
+            const statusGrade = document.getElementById('status-grade');
+            const statusSchool = document.getElementById('status-school');
+            const statusClass = document.getElementById('status-class');
+            const statusStatus = document.getElementById('status-status');
+            const errorMessage = document.getElementById('error-message');
+            const confirmSection = document.getElementById('confirm-section');
+            const confirmFullname = document.getElementById('confirm-fullname');
+            const confirmUsername = document.getElementById('confirm-username');
+            const confirmGender = document.getElementById('confirm-gender');
+            const confirmProvince = document.getElementById('confirm-province');
+            const confirmGrade = document.getElementById('confirm-grade');
+            const confirmSchool = document.getElementById('confirm-school');
+            const confirmClass = document.getElementById('confirm-class');
+            const confirmBoard = document.getElementById('confirm-board');
+            const fullnameInput = document.getElementById('fullname');
+            const sbdInput = document.getElementById('sbd');
+            const usernameInput = document.getElementById('username');
+            const genderSelect = document.getElementById('gender');
+            const provinceInput = document.getElementById('province');
+            const gradeSelect = document.getElementById('grade');
+            const schoolInput = document.getElementById('school');
+            const classInput = document.getElementById('class');
+            const boardInput = document.getElementById('board');
+            const agreeTermsCheckbox = document.getElementById('agree-terms');
+            let userInfo = null;
+
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 5000);
+            }
+
+            function getUserInfo(searchTerm) {
+                const storedUsers = localStorage.getItem('users');
+                if (!storedUsers) return null;
+
+                const users = JSON.parse(storedUsers);
+                return users.find(user =>
+                    user.username === searchTerm ||
+                    user.phone === searchTerm ||
+                    (user.id && user.id === searchTerm)
+                );
+            }
+
+            function generateUniqueSBD() {
+                let sbd;
+                do {
+                    sbd = String(Math.floor(Math.random() * 10000000000)); // 10 digits
+                } while (isSBDDuplicated(sbd)); // Ensure it's unique
+                return sbd;
+            }
+
+            function isSBDDuplicated(sbd) {
+                const allRegistrations = localStorage.getItem('allRegistrations');
+                if (!allRegistrations) return false;
+                const registrations = JSON.parse(allRegistrations);
+                return registrations.some(reg => reg.sbd === sbd);
+            }
+
+            function saveRegistration(data) {
+                let allRegistrations = localStorage.getItem('allRegistrations');
+                let registrations = allRegistrations ? JSON.parse(allRegistrations) : [];
+                registrations.push(data);
+                localStorage.setItem('allRegistrations', JSON.stringify(registrations));
+            }
+
+            function getRegistration(searchTerm) {
+                const allRegistrations = localStorage.getItem('allRegistrations');
+                if (!allRegistrations) return null;
+                const registrations = JSON.parse(allRegistrations);
+                return registrations.find(reg =>
+                    reg.username === searchTerm ||
+                    reg.phone === searchTerm ||
+                    reg.id === searchTerm
+                );
+            }
+
+            function updateInputState(inputElement, value, required = false) {
+                if (value) {
+                    inputElement.value = value;
+                    inputElement.disabled = true;
+                } else {
+                    inputElement.disabled = false;
+                    if (required) {
+                        inputElement.required = true;
+                    }
+                }
+            }
+
+            function getBoardByGrade(grade) {
+                if (grade >= 6 && grade <= 7) return 'A';
+                if (grade >= 8 && grade <= 9) return 'B';
+                if (grade >= 10 && grade <= 12) return 'C';
+                return '';
+            }
+
+            searchButton.addEventListener('click', function () {
+                const searchTerm = searchInput.value.trim();
+                if (!searchTerm) {
+                    showError('Vui lòng nhập thông tin tìm kiếm.');
+                    return;
+                }
+
+                userInfo = getUserInfo(searchTerm);
+                if (userInfo) {
+                    updateInputState(fullnameInput, userInfo.fullname);
+                    updateInputState(usernameInput, userInfo.username);
+                    provinceInput.value = userInfo.city || '';
+                    provinceInput.disabled = true;
+
+                    genderSelect.value = userInfo.gender || '';
+                    gradeSelect.value = userInfo.grade || '';
+
+                    // Enable the input fields based on whether there already has values for userInfo
+                    schoolInput.required = true;
+                    classInput.required = true;
+
+                    confirmFullname.textContent = userInfo.fullname;
+                    confirmUsername.textContent = userInfo.username;
+                    confirmGender.textContent = genderSelect.value || '';
+                    confirmProvince.textContent = provinceInput.value || '';
+                    confirmGrade.textContent = gradeSelect.value || '';
+                    confirmSchool.textContent = schoolInput.value || '';
+                    confirmClass.textContent = classInput.value || '';
+
+                    let board = getBoardByGrade(gradeSelect.value);
+                    boardInput.value = board;
+
+                    confirmBoard.textContent = board;
+
+                    confirmSection.style.display = 'block';
+                    registerButton.disabled = !agreeTermsCheckbox.checked;
+                } else {
+                    showError('Không tìm thấy thông tin người dùng.');
+                    confirmSection.style.display = 'none';
+                    registerButton.disabled = true;
+                }
+            });
+
+            agreeTermsCheckbox.addEventListener('change', function () {
+                registerButton.disabled = !this.checked || !userInfo;
+            });
+
+            registrationForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                if (!userInfo) {
+                    showError('Vui lòng tìm kiếm thông tin trước khi đăng ký.');
+                    return;
+                }
+
+                if (!agreeTermsCheckbox.checked) {
+                    showError('Vui lòng đồng ý với các điều khoản tham gia.');
+                    return;
+                }
+
+                if (!schoolInput.value) {
+                    showError('Vui lòng nhập tên trường.');
+                    return;
+                }
+                if (!classInput.value) {
+                    showError('Vui lòng nhập tên lớp.');
+                    return;
+                }
+
+                const board = getBoardByGrade(gradeSelect.value);
+
+                if (!board) {
+                    showError('Không xác định được bảng thi.');
+                    return;
+                }
+
+                const sbd = generateUniqueSBD();
+                const formData = {
+                    fullname: fullnameInput.value, // get from the form instead of initial
+                    username: usernameInput.value,
+                    gender: genderSelect.value || '',
+                    province: provinceInput.value || '',
+                    grade: gradeSelect.value,
+                    school: schoolInput.value,
+                    class: classInput.value,
+                    board: board,
+                    sbd: sbd,
+                    status: 'BTC CHƯA DUYỆT VUI LÒNG CHỜ'
+                };
+
+                saveRegistration(formData);
+                sbdInput.value = sbd;
+                alert('Đăng ký thành công! Số báo danh của bạn là: ' + sbd +
+                    '. Vui lòng chờ BTC duyệt.');
+                downloadButton.style.display = 'inline-block';
+            });
+
+            downloadButton.addEventListener('click', function () {
+                const searchTerm = searchInput.value.trim();
+                const registrationData = getRegistration(searchTerm);
+
+                if (registrationData) {
+                   const content = `
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>Giấy Báo Dự Thi</title>
+                            <style>
+                                body {
+                                    font-family: 'Times New Roman', serif;
+                                }
+
+                                .container {
+                                    width: 80%;
+                                    margin: auto;
+                                }
+
+                                h1 {
+                                    text-align: center;
+                                    color: #000;
+                                    margin-bottom: 20px;
+                                    font-size: 24px;
+                                }
+
+                                h2 {
+                                    text-align: center;
+                                    color: #000;
+                                    font-size: 18px;
+                                    margin-bottom: 10px;
+                                }
+
+                                p {
+                                    line-height: 1.6;
+                                    font-size: 16px;
+                                }
+
+                                .info {
+                                    margin-bottom: 15px;
+                                }
+
+                                .signature {
+                                    text-align: right;
+                                    margin-top: 30px;
+                                }
+
+                                .photo-frame {
+                                    width: 80px;
+                                    height: 120px;
+                                    border: 1px solid #000;
+                                    margin: 0 auto;
+                                    margin-bottom: 15px;
+                                    position: relative;
+                                }
+
+                                .photo-frame:after {
+                                    content: "Ảnh 2x3";
+                                    position: absolute;
+                                    top: 50%;
+                                    left: 50%;
+                                    transform: translate(-50%, -50%);
+                                    font-size: 12px;
+                                    color: #888;
+                                }
+                            </style>
+                        </head>
+
+                        <body>
+                            <div class="container">
+                                <h2>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</h2>
+                                <h2>Độc lập - Tự do - Hạnh phúc</h2>
+                                <h1>GIẤY BÁO DỰ THI</h1>
+                                <div class="photo-frame"></div>
+                                <div class="info">
+                                    <p><strong>Họ và tên:</strong> ${registrationData.fullname}</p>
+                                    <p><strong>Số báo danh:</strong> ${registrationData.sbd}</p>
+                                    <p><strong>Tên đăng nhập:</strong> ${registrationData.username}</p>
+                                    <p><strong>Bảng thi:</strong> ${registrationData.board}</p>
+                                    <p><strong>Giới tính:</strong> ${registrationData.gender}</p>
+                                    <p><strong>Tỉnh:</strong> ${registrationData.province}</p>
+                                    <p><strong>Khối:</strong> ${registrationData.grade}</p>
+                                    <p><strong>Trường:</strong> ${registrationData.school}</p>
+                                    <p><strong>Lớp:</strong> ${registrationData.class}</p>
+                                </div>
+                                <div class="signature">
+                                    <p><em>Ngày ... tháng ... năm ...</em></p>
+                                    <p><strong>Người đăng ký</strong></p>
+                                    <p>(Ký và ghi rõ họ tên)</p>
+                                </div>
+                            </div>
+                        </body>
+                        </html>
+                    `;
+
+                    const blob = new Blob([content], {
+                        type: 'text/html'
+                    });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'giay_bao_du_thi.html';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                } else {
+                    showError('Không có thông tin đăng ký để tải.');
+                }
+            });
+
+            statusSearchButton.addEventListener('click', function () {
+                const searchTerm = statusSearchInput.value.trim();
+                const registrationData = getRegistration(searchTerm);
+
+                if (registrationData) {
+                    statusFullname.textContent = registrationData.fullname;
+                    statusSbd.textContent = registrationData.sbd;
+                    statusUsername.textContent = registrationData.username;
+                    statusBoard.textContent = registrationData.board;
+                    statusGender.textContent = registrationData.gender;
+                    statusProvince.textContent = registrationData.province;
+                    statusGrade.textContent = registrationData.grade;
+                    statusSchool.textContent = registrationData.school;
+                    statusClass.textContent = registrationData.class;
+                    statusStatus.textContent = registrationData.status;
+                    statusDetails.style.display = 'block';
+                    noStatusMessage.style.display = 'none';
+                } else {
+                    statusDetails.style.display = 'none';
+                    noStatusMessage.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

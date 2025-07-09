@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Cá Nhân</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+            margin: 0;
+        }
+       .profile-header {
+            cursor: pointer;
+            position: relative;
+            display: inline-block;
+            background-color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+        .profile-header i {
+            color: #3498db;
+        }
+         .profile-header:hover {
+             background-color: #e0f7f5;
+        }
+         .profile-header:hover i {
+            color: #2980b9;
+        }
+        .profile-popup {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            padding: 15px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            border-radius: 5px;
+        }
+        .profile-popup.active {
+            display: block;
+        }
+        .profile-popup ul {
+            list-style: none;
+            padding: 0;
+        }
+        .profile-popup li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .profile-popup li:hover {
+            background-color: #f8f9fa;
+        }
+        .profile-popup li:last-child {
+            border-bottom: none;
+        }
+         .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            display: none;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: 10px;
+            width: 900px;
+        }
+        .popup.active {
+            display: block;
+        }
+        #info-popup .popup-content p {
+            margin-bottom: 10px;
+        }
+        #info-popup .popup-content {
+            padding: 25px;
+        }
+          .table-responsive {
+            overflow-x: auto;
+          }
+           .table-arenas {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            font-size: 1rem; /* Increase font size */
+            width: 100%;
+            margin: 0 auto;
+         }
+           .table-arenas thead {
+                background: linear-gradient(45deg, #4CAF50, #8BC34A);
+                color: white;
+            }
+          .table-arenas th,
+          .table-arenas td {
+                text-align: center;
+                padding: 12px 8px; /* Increase padding */
+                border: none;
+                white-space: nowrap;
+                vertical-align: middle; /* Vertically center text */
+
+            }
+            .table-arenas tbody tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+            .table-arenas tbody tr:hover {
+                background-color: #e0f7f5;
+            }
+          .btn-arena {
+               background-color: #3498db;
+                color: white;
+                border: none;
+                padding: 8px 16px; /* Increase padding */
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                font-size: 1rem;
+                white-space: nowrap; /* Prevent text wrapping */
+            }
+            .btn-arena:hover {
+                background-color: #2980b9;
+            }
+            .btn-not-open{
+              background-color: #ccc;
+              color: white;
+              border: none;
+              padding: 8px 16px; /* Increase padding */
+              border-radius: 5px;
+             font-size: 1rem;
+              white-space: nowrap; /* Prevent text wrapping */
+          }
+           .btn-close {
+               float: right;
+               background-image: url('https://media.istockphoto.com/id/1131230925/vi/vec-to/d%E1%BA%A5u-ki%E1%BB%83m-bi%E1%BB%83u-t%C6%B0%E1%BB%A3ng-ch%E1%BB%AF-th%E1%BA%ADp-%C4%91%E1%BB%8F-%C4%91%C6%A1n-gi%E1%BA%A3n-vector.jpg?s=612x612&w=0&k=20&c=Zl4pvbt2-7JoQCohB1JdIf2JKS-BoHbhQGNhmhwaiSA=');
+                background-size: contain;
+                 width: 24px;
+                height: 24px;
+                border: 0;
+                cursor: pointer;
+
+                background-repeat: no-repeat;
+            }
+        .profile-picture-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto;
+            margin-bottom: 15px;
+        }
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile-picture-container input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .profile-picture-container::before {
+            content: "\f030";
+            font-family: 'Font Awesome 6 Free';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+            font-size: 2rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .profile-picture-container:hover::before {
+            opacity: 1;
+        }
+        .profile-picture-container:hover input[type="file"] {
+            cursor: pointer;
+        }
+        .profile-popup-menu {
+            position: relative;
+        }
+        #edit-profile-btn {
+            float: right;
+        }
+        .form-control:disabled {
+            background: #fff;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+         #arenas-table-container {
+           margin-bottom: 200px;
+         }
+         h1.text-center {
+                margin-top: 180px; /* Khoảng cách 180px tương đương 18cm */
+                 margin-bottom: 0;
+        }
+         .table-container{
+                padding: 10px;
+                 background-color: #fff;
+                border-radius: 10px;
+               box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+               margin-top: 80px;
+            }
+        .popup .btn-close {
+           position: absolute;
+            top: 10px;
+            right: 10px;
+           background-image: url('https://media.istockphoto.com/id/1131230925/vi/vec-to/d%E1%BA%A5u-ki%E1%BB%83m-bi%E1%BB%83u-t%C6%B0%E1%BB%A3ng-ch%E1%BB%AF-th%E1%BA%ADp-%C4%91%E1%BB%8F-%C4%91%C6%A1n-gi%E1%BA%A3n-vector.jpg?s=612x612&w=0&k=20&c=Zl4pvbt2-7JoQCohB1JdIf2JKS-BoHbhQGNhmhwaiSA=');
+               background-size: contain;
+           width: 24px;
+            height: 24px;
+             cursor: pointer;
+            border: 0;
+            background-repeat: no-repeat;
+
+        }
+        .day-counter {
+            font-size: 0.8rem;
+            color: gray;
+        }
+        #current-time {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+          .table-responsive{
+              overflow-x: auto;
+           }
+            .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: space-around; /* Đặt các liên kết đều nhau */
+            flex-wrap: wrap; /* Cho phép xuống dòng khi màn hình nhỏ */
+          }
+           .nav-links a {
+                display: flex;
+                flex-direction: column; /* Stack icon và text dọc */
+                align-items: center;
+                color: #333;
+                text-decoration: none;
+                margin-right: 10px; /* Giảm margin phải */
+                margin-bottom: 5px; /* Thêm margin dưới cho responsive */
+                padding: 8px 12px;
+                border-radius: 5px;
+                transition: background-color 0.3s;
+               text-align: center; /* Center text */
+           }
+           .nav-links a:hover {
+                background-color: #e0f7f5;
+            }
+           .nav-links i {
+                margin-bottom: 5px; /* Thêm margin dưới cho icon */
+                font-size: 1.5em; /* Lớn hơn một chút cho dễ nhìn */
+                transition: color 0.3s; /* Thêm hiệu ứng chuyển màu */
+           }
+           .nav-links a:hover i {
+                 color: #2980b9;
+           }
+            @media (min-width: 768px) {
+              .nav-links {
+                    justify-content: flex-start; /* Các liên kết sang trái trên màn hình lớn hơn */
+                }
+                 .nav-links a {
+                   flex-direction: row;
+                    margin-right: 20px;
+                    text-align: left;
+                   align-items: center;
+                }
+                 .nav-links i{
+                   margin-right: 5px;
+                    margin-bottom: 0;
+                   font-size: 1em;
+                 }
+            }
+            .navbar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.5rem 1rem;
+                 margin-bottom: 0; /* Loại bỏ margin mặc định của navbar */
+            }
+             .navbar .profile-header {
+                margin-left: auto;
+            }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <div class="nav-links">
+                   <a href="vaohoc.html">
+                        <i class="fas fa-book" style="color: #3498db;"></i> <span>Vào học</span>
+                    </a>
+                   <a href="luyenthi.html">
+                        <i class="fas fa-pencil-alt" style="color: #e67e22;"></i> <span>Luyện thi</span>
+                    </a>
+                     <a href="dautruong.html">
+                        <i class="fas fa-gamepad" style="color: #9b59b6;"></i> <span>Đấu trường</span>
+                    </a>
+                     <a href="trangcanhan.html">
+                      <i class="fas fa-trophy" style="color: #27ae60;"></i> <span>Vào thi</span>
+                    </a>
+                </div>
+                <div class="d-flex align-items-center">
+                <div class="profile-header">
+                    <i class="fa fa-user-circle me-2"></i> <span id="header-fullname"></span>
+                    <div class="profile-popup">
+                        <ul class="profile-popup-menu">
+                            <li id="info-menu">Thông tin cá nhân</li>
+                            <li id="change-password-menu">Đổi mật khẩu</li>
+                            <li id="logout-menu">Đăng xuất</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <h1 class="mb-4 text-center">Đấu Trường ARTC - Khối <span id="user-grade-display"></span></h1>
+        <p id="current-time"></p>
+        <div id="arenas-table-container">
+            <div class="table-container">
+                 <div class="table-responsive">
+                    <table class="table table-bordered table-arenas">
+                       <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Tên đấu trường</th>
+                                <th>Số người tham gia</th>
+                                <th>Ngày mở</th>
+                                <th>Ngày đóng</th>
+                                <th>Thao tác</th>
+                           </tr>
+                        </thead>
+                       <tbody id="arenas-table-body">
+                       </tbody>
+                   </table>
+               </div>
+           </div>
+       </div>
+    </div>
+<div id="info-popup" class="popup">
+    <div class="popup-content">
+        <button type="button" class="btn-close" aria-label="Close"></button>
+        <h3>Thông tin cá nhân</h3>
+        <div class="profile-picture-container">
+            <img id="profile-picture" src="https://placehold.co/100x100/333/fff" alt="Ảnh đại diện">
+            <input type="file" id="profile-image-upload" accept="image/*">
+        </div>
+        <button id="edit-profile-btn" class="btn btn-primary">Chỉnh sửa</button>
+        <form id="edit-profile-form">
+            <div class="mb-3">
+                <label for="popup-fullname" class="form-label">Họ và tên</label>
+                <input type="text" class="form-control" id="popup-fullname" disabled required>
+            </div>
+            <div class="mb-3">
+                <label for="popup-username" class="form-label">Tên đăng nhập</label>
+                <input type="text" class="form-control" id="popup-username" disabled required>
+            </div>
+            <div class="mb-3">
+                <label for="popup-email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="popup-email" disabled required>
+            </div>
+            <div class="mb-3">
+                <label for="popup-phone" class="form-label">Số điện thoại</label>
+                <input type="tel" class="form-control" id="popup-phone" disabled required>
+            </div>
+            <div class="mb-3">
+                <label for="popup-address" class="form-label">Địa chỉ</label>
+                <input type="text" class="form-control" id="popup-address" disabled required>
+            </div>
+            <div class="mb-3">
+                <label for="popup-grade" class="form-label">Khối</label>
+                <input type="text" class="form-control" id="popup-grade" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="popup-school" class="form-label">Trường</label>
+                <input type="text" class="form-control" id="popup-school" disabled required>
+            </div>
+            <div class="mb-3">
+                <label for="popup-class" class="form-label">Lớp</label>
+                <input type="text" class="form-control" id="popup-class" disabled required>
+            </div>
+            <div class="mb-3">
+                <label for="popup-dob" class="form-label">Ngày sinh</label>
+                <input type="date" class="form-control" id="popup-dob" disabled required>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary" style="display: none">Lưu thông tin</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div id="change-password-popup" class="popup">
+    <div class="popup-content">
+        <button type="button" class="btn-close" aria-label="Close"></button>
+        <h3>Đổi mật khẩu</h3>
+        <form id="change-password-form">
+            <div class="mb-3">
+                <label for="current-password" class="form-label">Mật khẩu hiện tại</label>
+                <input type="password" class="form-control" id="current-password" required>
+            </div>
+            <div class="mb-3">
+                <label for="new-password" class="form-label">Mật khẩu mới</label>
+                <input type="password" class="form-control" id="new-password" required>
+            </div>
+            <div class="mb-3">
+                <label for="confirm-new-password" class="form-label">Nhập lại mật khẩu mới</label>
+                <input type="password" class="form-control" id="confirm-new-password" required>
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Xác nhận đổi mật khẩu</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+     const profileHeader = document.querySelector('.profile-header');
+    const profilePopup = document.querySelector('.profile-popup');
+    const infoPopup = document.getElementById('info-popup');
+    const editProfileForm = document.getElementById('edit-profile-form');
+    const editProfileBtn = document.getElementById('edit-profile-btn');
+    const changePasswordPopup = document.getElementById('change-password-popup');
+    const changePasswordForm = document.getElementById('change-password-form');
+     const profilePicture = document.getElementById('profile-picture');
+    const profileImageUpload = document.getElementById('profile-image-upload');
+    const arenasTableBody = document.getElementById('arenas-table-body');
+      const infoMenu = document.getElementById('info-menu');
+    const changePasswordMenu = document.getElementById('change-password-menu');
+      const logoutMenu = document.getElementById('logout-menu');
+    const userGradeDisplay = document.getElementById('user-grade-display');
+     const arenasTableContainer = document.getElementById('arenas-table-container');
+      const currentTimeDisplay = document.getElementById('current-time');
+
+      const loginTime = localStorage.getItem('loginTime');
+    const currentTime = new Date().getTime();
+    if (!loginTime || (currentTime - parseInt(loginTime)) > 24 * 60 * 60 * 1000) {
+        localStorage.removeItem('user');
+        localStorage.removeItem('loginTime');
+        window.location.href = 'dangnhap.html';
+    }
+
+    // Lấy thông tin người dùng từ localStorage
+    const storedUser = localStorage.getItem('user');
+    let user;
+    if (storedUser) {
+        user = JSON.parse(storedUser);
+    } else {
+        window.location.href = 'dangnhap.html';
+    }
+
+      // Hiển thị khối của người dùng
+    userGradeDisplay.textContent = user.grade;
+     // Hiển thị thông tin người dùng trên header
+    document.getElementById('header-fullname').textContent = user.fullname;
+
+     function updateCurrentTime() {
+        const now = new Date();
+        const formattedTime = now.toLocaleDateString('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        currentTimeDisplay.textContent = formattedTime;
+    }
+    updateCurrentTime();
+    setInterval(updateCurrentTime, 60000);
+
+    function toggleProfilePopup() {
+        profilePopup.classList.toggle('active');
+         if(profilePopup.classList.contains('active')){
+            document.addEventListener('click',function(event){
+            if (!profileHeader.contains(event.target)) {
+                 profilePopup.classList.remove('active');
+                 document.removeEventListener('click', arguments.callee);
+            }
+           });
+         }
+    }
+    profileHeader.addEventListener('click', toggleProfilePopup);
+    function closeAllPopup() {
+        infoPopup.classList.remove('active');
+        changePasswordPopup.classList.remove('active');
+    }
+    document.querySelectorAll('.popup .btn-close').forEach(closeButton => {
+        closeButton.addEventListener('click', closeAllPopup);
+    });
+    function loadInfoPopup() {
+        document.getElementById('popup-fullname').value = user.fullname;
+        document.getElementById('popup-username').value = user.username;
+        document.getElementById('popup-email').value = user.email;
+        document.getElementById('popup-phone').value = user.phone;
+        document.getElementById('popup-address').value = `${user.ward}, ${user.district}, ${user.city}`;
+        document.getElementById('popup-grade').value = user.grade;
+        document.getElementById('popup-school').value = user.school;
+        document.getElementById('popup-class').value = user.class;
+        document.getElementById('popup-dob').value = user.dob;
+        if (user.profilePicture) {
+            profilePicture.src = user.profilePicture;
+        } else {
+            profilePicture.src = "https://placehold.co/100x100/333/fff";
+        }
+    }
+    loadInfoPopup();
+     // Xử lý nút đăng xuất
+    logoutMenu.addEventListener('click', function () {
+         profilePopup.classList.remove('active');
+        localStorage.removeItem('user');
+        localStorage.removeItem('loginTime');
+        window.location.href = 'dangnhap.html';
+    });
+     // Mở popup thông tin cá nhân
+    infoMenu.addEventListener('click', function () {
+        profilePopup.classList.remove('active');
+         loadInfoPopup();
+        infoPopup.classList.add('active');
+    });
+    // Mở popup đổi mật khẩu
+    changePasswordMenu.addEventListener('click', function () {
+        profilePopup.classList.remove('active');
+        changePasswordPopup.classList.add('active');
+    });
+    editProfileBtn.addEventListener('click', function () {
+        editProfileForm.querySelectorAll('.form-control:not([id="popup-username"]):not([id="popup-grade"])').forEach(input => {
+            input.disabled = false;
+        });
+        editProfileForm.querySelector('button[type="submit"]').style.display = 'block';
+    });
+     // Xử lý sự kiện chỉnh sửa thông tin
+    editProfileForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        user.fullname = document.getElementById('popup-fullname').value;
+        user.username = document.getElementById('popup-username').value;
+        user.email = document.getElementById('popup-email').value;
+        user.phone = document.getElementById('popup-phone').value;
+        user.city = document.getElementById('popup-address').value.split(', ')[2] || user.city;
+        user.district = document.getElementById('popup-address').value.split(', ')[1] || user.district;
+         user.ward = document.getElementById('popup-address').value.split(', ')[0] || user.ward;
+        user.school = document.getElementById('popup-school').value;
+        user.class = document.getElementById('popup-class').value;
+        user.dob = document.getElementById('popup-dob').value;
+        localStorage.setItem('user', JSON.stringify(user));
+        loadInfoPopup();
+         document.getElementById('header-fullname').textContent = user.fullname;
+        alert('Cập nhật thông tin cá nhân thành công!');
+        editProfileForm.querySelectorAll('.form-control:not([id="popup-username"]):not([id="popup-grade"])').forEach(input => {
+            input.disabled = true;
+        });
+        editProfileForm.querySelector('button[type="submit"]').style.display = 'none';
+        infoPopup.classList.remove('active');
+    });
+     profileImageUpload.addEventListener('change', function () {
+        const file = profileImageUpload.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                if (isImageSafe(e.target.result)) {
+                    profilePicture.src = e.target.result;
+                    user.profilePicture = e.target.result;
+                    localStorage.setItem('user', JSON.stringify(user));
+                     alert("Ảnh đại diện đã được cập nhật.");
+                } else {
+                    alert("Ảnh không an toàn! Vui lòng chọn ảnh khác.");
+                    profileImageUpload.value = '';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+     function isImageSafe(imageBase64) {
+        // Đây là nơi bạn sẽ thêm logic quét ảnh thông minh
+        // Với mục đích ví dụ, mình sẽ return true (luôn cho là ảnh an toàn)
+        // Trong thực tế, bạn sẽ sử dụng một thư viện bên thứ 3 hoặc API để scan ảnh
+        // Bạn có thể dùng model AI/ML
+        return true;
+    }
+    // Xử lý form đổi mật khẩu
+    changePasswordForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const currentPassword = document.getElementById('current-password').value;
+        const newPassword = document.getElementById('new-password').value;
+        const confirmNewPassword = document.getElementById('confirm-new-password').value;
+        if (user.password !== currentPassword) {
+            alert('Mật khẩu hiện tại không chính xác!');
+            return;
+        }
+        if (newPassword !== confirmNewPassword) {
+            alert('Mật khẩu mới và xác nhận mật khẩu không khớp.');
+            return;
+        }
+        user.password = newPassword;
+        localStorage.setItem('user', JSON.stringify(user));
+        alert('Đổi mật khẩu thành công!');
+        changePasswordPopup.classList.remove('active');
+    });
+
+    const arenas = [
+        {
+            id: 1,
+            name: 'Đấu Trường Tháng 10',
+            participants: 100,
+            startDate: '2025-09-05',
+            endDate: '2026-04-13',
+        },
+        {
+            id: 2,
+            name: 'Đấu Trường Tháng 12',
+            participants: 50,
+            startDate: '2025-10-06',
+           endDate: '2026-04-13',
+        },
+          {
+            id: 3,
+            name: 'Đấu Trường Tháng 02',
+            participants: 50,
+            startDate: '2025-11-10',
+            endDate: '2026-04-13',
+        },
+         {
+            id: 4,
+            name: 'Đấu Trường Tháng 04 - Chung Khảo',
+            participants: 50,
+            startDate: '2025-11-24',
+            endDate: '2026-04-13',
+        },
+          {
+            id: 5,
+             name: 'Đấu Trường Tháng 5 - Chung Kết',
+            participants: 10,
+            startDate: '2026-04-01',
+            endDate: '2026-04-03',
+        },
+    ];
+
+     function renderArenasTable() {
+            arenasTableBody.innerHTML = '';
+            if (arenas.length === 0) {
+                arenasTableContainer.innerHTML = '<p class="text-center">Không có dữ liệu đấu trường!</p>';
+                return;
+            }
+        const today = new Date();
+            arenas.forEach((arena, index) => {
+                const startDate = new Date(arena.startDate);
+                const endDate = new Date(arena.endDate);
+
+                const row = document.createElement('tr');
+                 const link = `D${index+1}K${user.grade}.html`;
+                 let actionButton = '';
+                   let daysRemaining = '';
+                 if (startDate > today) {
+                      const timeDiff = startDate.getTime() - today.getTime();
+                       const days = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                       if (days <= 2) {
+                         daysRemaining = `<span class="day-counter">Còn ${days} ngày</span>`;
+                          }
+                          actionButton = '<button class="btn btn-not-open" disabled>Chưa mở</button>';
+
+                 }
+                 else if(endDate < today){
+                         actionButton = '<button class="btn btn-not-open" disabled>Đã đóng</button>';
+                 }
+                 else {
+                     actionButton = `<a href="${link}" class="btn btn-arena">Vào đấu</a>`;
+                  }
+
+
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${arena.name}</td>
+                    <td>${arena.participants}</td>
+                    <td>${arena.startDate} ${daysRemaining}</td>
+                    <td>${arena.endDate}</td>
+                    <td>${actionButton}</td>
+                `;
+                arenasTableBody.appendChild(row);
+            });
+        }
+
+        renderArenasTable();
+</script>
+</body>
+</html>

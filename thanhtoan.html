@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en"></html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh Toán Thông Minh</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .qr-code img {
+            width: 200px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+        }
+        .qr-status {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .qr-status.waiting {
+            color: #ff9800;
+        }
+        .qr-status.success {
+            color: #28a745;
+        }
+        .qr-status.failed {
+            color: #dc3545;
+        }
+        .toast {
+            visibility: hidden;
+            min-width: 300px;
+            background-color: #28a745;
+            color: #fff;
+            text-align: left;
+            border-radius: 8px;
+            padding: 18px 24px;
+            position: fixed;
+            z-index: 1000;
+            right: 30px;
+            top: 30px;
+            font-size: 17px;
+            box-shadow: 0 4px 16px rgba(40,167,69,0.15);
+            opacity: 0;
+            transition: opacity 0.5s, visibility 0.5s, background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        .toast.success {
+            background-color: #28a745;
+        }
+        .toast.error {
+            background-color: #dc3545;
+        }
+        .success-btn {
+            padding: 12px 28px;
+            background: linear-gradient(90deg, #28a745 60%, #218838 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 18px;
+            font-size: 18px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(40,167,69,0.08);
+            transition: background 0.2s;
+        }
+        .success-btn:hover {
+            background: linear-gradient(90deg, #218838 60%, #28a745 100%);
+        }
+        .banks {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin: 18px 0 10px 0;
+            flex-wrap: wrap;
+        }
+        .banks img {
+            height: 36px;
+            border-radius: 6px;
+            background: #f7f7f7;
+            padding: 4px 10px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+        .guide {
+            background: #f0f8ff;
+            border-left: 4px solid #28a745;
+            padding: 16px 18px;
+            border-radius: 6px;
+            margin-bottom: 18px;
+            text-align: left;
+            font-size: 16px;
+        }
+        .ad-banner {
+            margin: 20px 0 0 0;
+            background: linear-gradient(90deg, #e0ffe7 60%, #f0f8ff 100%);
+            border-radius: 8px;
+            padding: 18px 24px;
+            font-size: 17px;
+            color: #218838;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(40,167,69,0.06);
+        }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+        <h1>Thanh Toán Thông Minh</h1>
+        <div class="banks">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Vietcombank_logo.png" alt="Vietcombank" title="Vietcombank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Logo_TPBANK.png" alt="TPBank" title="TPBank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Logo_BIDV.png" alt="BIDV" title="BIDV">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Logo_VietinBank.png" alt="VietinBank" title="VietinBank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2d/Logo_Agribank.png" alt="Agribank" title="Agribank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2d/Logo_MBBank.png" alt="MBBank" title="MBBank">
+        </div>
+        <div class="guide">
+            <b>Hướng dẫn thanh toán:</b>
+            <ol style="margin: 10px 0 0 18px;">
+            <li>Mở ứng dụng ngân hàng hoặc ví điện tử hỗ trợ quét mã QR.</li>
+            <li>Quét mã QR bên dưới để tự động điền thông tin chuyển khoản.</li>
+            <li>Kiểm tra kỹ số tiền và nội dung chuyển khoản.</li>
+            <li>Sau khi chuyển khoản thành công, nhấn <b>"Tôi đã chuyển khoản thành công"</b> để xác nhận.</li>
+            </ol>
+        </div>
+        <p>Vui lòng thanh toán trong vòng <span id="countdown">10:00</span> phút.</p>
+        <div class="qr-code">
+            <img src="https://img.vietqr.io/image/NAB-0988574939-print.png?amount=1200000&addInfo=&accountName=VUONGCHIDAI" alt="QR Code">
+            <div id="qrStatus" class="qr-status waiting">Chờ bạn quét mã...</div>
+            <p>Quét mã QR để thanh toán.</p>
+        </div>
+        <button id="successBtn" class="success-btn">Tôi đã chuyển khoản thành công</button>
+        <div class="ad-banner">
+            <span>⚡ Thanh toán nhanh chóng, an toàn, hỗ trợ hầu hết các ngân hàng Việt Nam! Trải nghiệm giao diện 5.0 hiện đại, bảo mật tuyệt đối.</span>
+        </div>
+        </div>
+        <div id="toast" class="toast"></div>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const countdownDisplay = document.getElementById('countdown');
+            const qrStatus = document.getElementById('qrStatus');
+            const successBtn = document.getElementById('successBtn');
+            const toast = document.getElementById('toast');
+            let timeLeft = 600; // 10 phút = 600 giây
+
+            function updateCountdown() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            countdownDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            if (timeLeft <= 0) {
+                clearInterval(countdownInterval);
+                countdownDisplay.textContent = "Hết thời gian!";
+                qrStatus.textContent = "Hết thời gian thanh toán!";
+                qrStatus.className = "qr-status failed";
+                successBtn.disabled = true;
+                showToast("Hết thời gian thanh toán!", "error");
+            } else {
+                timeLeft--;
+            }
+            }
+            updateCountdown();
+            const countdownInterval = setInterval(updateCountdown, 1000);
+
+            successBtn.addEventListener('click', function() {
+            showToast("Giao dịch tạm thời đang xử lí, vui lòng chờ kết quả sau 3 tiếng.", "success");
+            setTimeout(function() {
+                window.location.href = "trangcanhan.html";
+            }, 2500);
+            });
+
+            function showToast(message, type = "success") {
+            toast.textContent = "";
+            const icon = document.createElement("span");
+            icon.style.fontSize = "22px";
+            icon.style.marginRight = "8px";
+            if(type === "success") {
+                icon.textContent = "✔️";
+            } else if(type === "error") {
+                icon.textContent = "❌";
+            }
+            toast.appendChild(icon);
+            toast.appendChild(document.createTextNode(message));
+            toast.className = `toast show ${type}`;
+            setTimeout(function() {
+                toast.className = `toast ${type}`;
+            }, 2000);
+            }
+        });
+        </script>
+    </body>
+    </html></div>
